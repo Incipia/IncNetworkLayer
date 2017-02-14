@@ -1,0 +1,16 @@
+PODS:
+  - IncNetworkLayer (0.1.0)
+
+DEPENDENCIES:
+  - IncNetworkLayer (from `../`)
+
+EXTERNAL SOURCES:
+  IncNetworkLayer:
+    :path: ../
+
+SPEC CHECKSUMS:
+  IncNetworkLayer: 4b5d280239918c6c6abd92e93f3bec7d5c0d8140
+
+PODFILE CHECKSUM: 0d33e696459ef42467fa836ff257e02c122d1cbe
+
+COCOAPODS: 1.2.0

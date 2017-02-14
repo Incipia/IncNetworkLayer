@@ -1,0 +1,6 @@
+use_frameworks!
+target 'IncNetworkLayer_Tests' do
+  pod 'IncNetworkLayer', :path => '../'
+  
+  
+end
