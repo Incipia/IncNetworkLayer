@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0B7579DAEEA9A2FF82779F47E43E6FF3 /* Pods-IncNetworkLayer_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CE18994D7A5A3D581C04F5A007B7A2F /* Pods-IncNetworkLayer_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		281A3CE010C07E82DF0C746294E890AA /* ReplaceMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93868C0A71CA16A3E48C9C4B7047241 /* ReplaceMe.swift */; };
+		281A3CE010C07E82DF0C746294E890AA /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93868C0A71CA16A3E48C9C4B7047241 /* Request.swift */; };
 		6AC822C42F20DE393616264CE013E69E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */; };
 		73C68F8C9002168C8115C77DD15797EF /* IncNetworkLayer-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9516EC9D795C4ABA3333BEEC953EC7DD /* IncNetworkLayer-dummy.m */; };
 		A73C139A27972108802F6E6C33C41825 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */; };
@@ -43,7 +43,7 @@
 		9CE18994D7A5A3D581C04F5A007B7A2F /* Pods-IncNetworkLayer_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-IncNetworkLayer_Tests-umbrella.h"; sourceTree = "<group>"; };
 		B2A78BC7A900D5753B0D1F6966DFB6A7 /* Pods-IncNetworkLayer_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-IncNetworkLayer_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		C25B69825C7FD6F120DD00308E6D8117 /* Pods-IncNetworkLayer_Tests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-IncNetworkLayer_Tests-resources.sh"; sourceTree = "<group>"; };
-		C93868C0A71CA16A3E48C9C4B7047241 /* ReplaceMe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReplaceMe.swift; sourceTree = "<group>"; };
+		C93868C0A71CA16A3E48C9C4B7047241 /* Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
 		CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		CDE55C5E79F3AB5ADBBFA58462A9179D /* IncNetworkLayer-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "IncNetworkLayer-umbrella.h"; sourceTree = "<group>"; };
 		D0A9DB988E79FB3B4C40AC8F6C94EACD /* Pods-IncNetworkLayer_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-IncNetworkLayer_Tests-frameworks.sh"; sourceTree = "<group>"; };
@@ -149,7 +149,7 @@
 		E8D58233B2BFB5711AD64A6CE76CABBC /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				C93868C0A71CA16A3E48C9C4B7047241 /* ReplaceMe.swift */,
+				C93868C0A71CA16A3E48C9C4B7047241 /* Request.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -278,7 +278,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				73C68F8C9002168C8115C77DD15797EF /* IncNetworkLayer-dummy.m in Sources */,
-				281A3CE010C07E82DF0C746294E890AA /* ReplaceMe.swift in Sources */,
+				281A3CE010C07E82DF0C746294E890AA /* Request.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
