@@ -21,10 +21,10 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/openfryer/IncNetworkLayer'
+  s.homepage         = 'https://github.com/Incipia/IncNetworkLayer'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.author           = { 'Leif Meyer' => 'leif@incipia.co' }
-  s.source           = { :git => 'https://github.com/Incipia/IncNetworkLayer.git', :tag => s.version.to_s }
+  s.source           = { :git => 'git@github.com:Incipia/IncNetworkLayer.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '9.0'
 
