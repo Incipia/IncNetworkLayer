@@ -1,6 +1,6 @@
 import Foundation
 
-public final class BackendConfiguration {
+public final class IncNetworkRequestConfiguration {
     
     let baseURL: URL
     
@@ -8,5 +8,5 @@ public final class BackendConfiguration {
         self.baseURL = baseURL
     }
     
-    public static var shared: BackendConfiguration!
+    public static var shared: IncNetworkRequestConfiguration!
 }

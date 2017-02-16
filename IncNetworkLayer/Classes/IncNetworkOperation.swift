@@ -1,6 +1,6 @@
 import Foundation
 
-public class NetworkOperation: Operation {
+public class IncNetworkOperation: Operation {
     
     private var _isReady: Bool
     public override var isReady: Bool {

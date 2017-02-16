@@ -1,9 +1,9 @@
 import Foundation
 
-final class ArrayResponseMapper<A: ParsedItem> {
+final class IncNetworkArrayMapper<A: IncNetworkParsedItem> {
     
     static func process(_ obj: AnyObject?, mapper: ((Any?) throws -> A)) throws -> [A] {
-        guard let json = obj as? [[String: AnyObject]] else { throw ResponseMapperError.invalid }
+        guard let json = obj as? [[String: AnyObject]] else { throw IncNetworkMapperError.invalid }
         
         var items = [A]()
         for jsonNode in json {

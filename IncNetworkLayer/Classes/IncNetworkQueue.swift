@@ -1,8 +1,8 @@
 import Foundation
 
-public class NetworkQueue {
+public class IncNetworkQueue {
     
-    public static var shared: NetworkQueue!
+    public static var shared: IncNetworkQueue!
     
     let queue = OperationQueue()
     

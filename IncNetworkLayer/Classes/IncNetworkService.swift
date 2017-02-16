@@ -1,6 +1,6 @@
 import Foundation
 
-class NetworkService {
+class IncNetworkService {
     
     private var task: URLSessionDataTask?
     private var successCodes: CountableRange<Int> = 200..<299
@@ -54,7 +54,7 @@ class NetworkService {
                     NSLocalizedDescriptionKey: "Request failed with code \(httpResponse.statusCode)",
                     NSLocalizedFailureReasonErrorKey: "Wrong handling logic, wrong endpoing mapping or backend bug."
                 ]
-                let error = NSError(domain: "NetworkService", code: 0, userInfo: info)
+                let error = NSError(domain: "IncNetworkService", code: 0, userInfo: info)
                 failure?(data, error, httpResponse.statusCode)
             }
         })

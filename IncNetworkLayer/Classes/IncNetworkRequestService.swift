@@ -2,16 +2,16 @@ import Foundation
 
 public let DidPerformUnauthorizedOperation = "DidPerformUnauthorizedOperation"
 
-class BackendService {
+class IncNetworkRequestService {
     
-    private let conf: BackendConfiguration
-    private let service = NetworkService()
+    private let conf: IncNetworkRequestConfiguration
+    private let service = IncNetworkService()
     
-    init(_ conf: BackendConfiguration) {
+    init(_ conf: IncNetworkRequestConfiguration) {
         self.conf = conf
     }
     
-    func request(_ request: BackendAPIRequest,
+    func request(_ request: IncNetworkRequest,
                  success: ((AnyObject?) -> Void)? = nil,
                  failure: ((NSError) -> Void)? = nil) {
         
@@ -41,10 +41,10 @@ class BackendService {
                         NSLocalizedDescriptionKey: json?["error"] as? String ?? "",
                         NSLocalizedFailureReasonErrorKey: "Probably not allowed action."
                     ]
-                    let error = NSError(domain: "BackendService", code: 0, userInfo: info)
+                    let error = NSError(domain: "IncNetworkRequestService", code: 0, userInfo: info)
                     failure?(error)
                 } else {
-                    failure?(error ?? NSError(domain: "BackendService", code: 0, userInfo: nil))
+                    failure?(error ?? NSError(domain: "IncNetworkRequestService", code: 0, userInfo: nil))
                 }
         })
     }
