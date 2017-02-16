@@ -3,8 +3,8 @@ import Foundation
 class IncNetworkService {
    
    private var task: URLSessionDataTask?
-   private var successCodes: CountableRange<Int> = 200..<299
-   private var failureCodes: CountableRange<Int> = 400..<499
+   private var successCodes: CountableClosedRange<Int> = 200...299
+   private var failureCodes: CountableClosedRange<Int> = 400...499
    
    enum Method: String {
       case get, post, put, delete
