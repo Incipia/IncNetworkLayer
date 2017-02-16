@@ -2,7 +2,7 @@ import Foundation
 
 public let DidPerformUnauthorizedOperation = "DidPerformUnauthorizedOperation"
 
-class IncNetworkRequestService {
+public class IncNetworkRequestService {
    
    private let conf: IncNetworkRequestConfiguration
    private let service = IncNetworkService()
@@ -11,7 +11,7 @@ class IncNetworkRequestService {
       self.conf = conf
    }
    
-   func request(_ request: IncNetworkRequest,
+   public func request(_ request: IncNetworkRequest,
                 success: ((AnyObject?) -> Void)? = nil,
                 failure: ((NSError) -> Void)? = nil) {
       

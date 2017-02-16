@@ -1,6 +1,6 @@
 import Foundation
 
-protocol IncNetworkRequest {
+public protocol IncNetworkRequest {
    var endpoint: String { get }
    var method: IncNetworkService.Method { get }
    var query: IncNetworkService.QueryType { get }
@@ -10,7 +10,7 @@ protocol IncNetworkRequest {
 
 extension IncNetworkRequest {
    
-   func defaultJSONHeaders() -> [String: String] {
+   public func defaultJSONHeaders() -> [String: String] {
       return ["Content-Type": "application/json"]
    }
 }
