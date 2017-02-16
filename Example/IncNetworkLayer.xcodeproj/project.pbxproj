@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		39D9FFDDED5E536F7EA61604 /* Pods_IncNetworkLayer_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29CFEB82B62E577F70BC30C1 /* Pods_IncNetworkLayer_Tests.framework */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		E94794B01E55364200DBD135 /* test-json in Resources */ = {isa = PBXBuildFile; fileRef = E94794AF1E55364200DBD135 /* test-json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +22,7 @@
 		62516FBA817274D7046C4E11 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		869000C6AE7CE746016A1682 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		D1E36D00A50BF4652E8BA025 /* IncNetworkLayer.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = IncNetworkLayer.podspec; path = ../IncNetworkLayer.podspec; sourceTree = "<group>"; };
+		E94794AF1E55364200DBD135 /* test-json */ = {isa = PBXFileReference; explicitFileType = text.json; fileEncoding = 4; path = "test-json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				607FACEB1AFB9204008FA782 /* Tests.swift */,
+				E94794AF1E55364200DBD135 /* test-json */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -161,6 +164,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E94794B01E55364200DBD135 /* test-json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
