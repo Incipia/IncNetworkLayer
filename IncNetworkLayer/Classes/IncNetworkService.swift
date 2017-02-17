@@ -5,6 +5,7 @@ public class IncNetworkService {
    private var task: URLSessionDataTask?
    private var successCodes: CountableClosedRange<Int> = 200...299
    private var failureCodes: CountableClosedRange<Int> = 400...499
+   private var nonHTTPCode: Int = -1
    
    public enum Method: String {
       case get, post, put, delete
@@ -29,33 +30,35 @@ public class IncNetworkService {
       let session = URLSession.shared
       
       task = session.dataTask(with: mutableRequest as URLRequest, completionHandler: { (data, response, error) in
-         guard let httpResponse = response as? HTTPURLResponse else {
-            failure?(data, error as? NSError, 0)
-            return
-         }
+         let httpResponse = response as? HTTPURLResponse
+         let statusCode = httpResponse?.statusCode ?? self.nonHTTPCode
          
          if let error = error {
             // Request failed, might be internet connection issue
-            failure?(data, error as NSError, httpResponse.statusCode)
+            failure?(data, error as NSError, statusCode)
             return
          }
          
-         if self.successCodes.contains(httpResponse.statusCode) {
-            print("Request finished with success.")
+         switch statusCode {
+         case let statusCode where self.successCodes.contains(statusCode):
+            print("Request finished with success code \(statusCode).")
             success?(data)
-         } else if self.failureCodes.contains(httpResponse.statusCode) {
-            print("Request finished with failure.")
-            failure?(data, error as NSError?, httpResponse.statusCode)
-         } else {
+         case let statusCode where self.failureCodes.contains(statusCode):
+            print("Request finished with failure code \(statusCode).")
+            failure?(data, error as NSError?, statusCode)
+         case self.nonHTTPCode:
+            print("Non-HTTP Request finished with success.")
+            success?(data)
+         default:
             print("Request finished with serious failure.")
             // Server returned response with status code different than
             // expected `successCodes`.
             let info = [
-               NSLocalizedDescriptionKey: "Request failed with code \(httpResponse.statusCode)",
+               NSLocalizedDescriptionKey: "Request failed with code \(statusCode)",
                NSLocalizedFailureReasonErrorKey: "Wrong handling logic, wrong endpoing mapping or backend bug."
             ]
             let error = NSError(domain: "IncNetworkService", code: 0, userInfo: info)
-            failure?(data, error, httpResponse.statusCode)
+            failure?(data, error, statusCode)
          }
       })
       
