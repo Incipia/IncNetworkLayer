@@ -11,18 +11,18 @@ import IncNetworkLayer
 
 public struct RouteItem: IncNetworkParsedItem {
    
-   public let token: String
-   public let uniqueId: String
+   public let route: String
+   public let confidence: Double
 }
 
 final class RouteResponseMapper: IncNetworkMapper<RouteItem>, IncNetworkParsedItem {
    
    static func process(_ obj: AnyObject?) throws -> RouteItem {
       return try process(obj, parse: { json in
-         let token = json["route"] as? String
-         let uniqueId = json["confidence"] as? String
-         if let token = token, let uniqueId = uniqueId {
-            return RouteItem(token: token, uniqueId: uniqueId)
+         let route = json["route"] as? String
+         let confidence = json["confidence"] as? Double
+         if let route = route, let confidence = confidence {
+            return RouteItem(route: route, confidence: confidence)
          }
          return nil
       })
