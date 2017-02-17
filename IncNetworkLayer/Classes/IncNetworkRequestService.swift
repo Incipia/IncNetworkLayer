@@ -2,6 +2,12 @@ import Foundation
 
 public let DidPerformUnauthorizedOperation = "DidPerformUnauthorizedOperation"
 
+public enum IncNetworkRequestServiceError: Error {
+   case noData
+   case nonJSONData
+   case jsonData(json: Any)
+}
+
 public class IncNetworkRequestService {
    
    private let conf: IncNetworkRequestConfiguration
@@ -13,7 +19,7 @@ public class IncNetworkRequestService {
    
    public func request(_ request: IncNetworkRequest,
                 success: ((AnyObject?) -> Void)? = nil,
-                failure: ((NSError) -> Void)? = nil) {
+                failure: ((Error) -> Void)? = nil) {
       
       let url = conf.baseURL.appendingPathComponent(request.endpoint)
       
@@ -21,30 +27,35 @@ public class IncNetworkRequestService {
       // Set authentication token if available.
       //        headers?["X-Api-Auth-Token"] = BackendAuth.shared.token
       
-      service.makeRequest(for: url, method: request.method, query: request.query, params: request.parameters, headers: headers, success: { data in
+      service.makeRequest(for: url, method: request.method, query: request.query, params: request.parameters, headers: headers, success: { data, result in
          var json: AnyObject? = nil
          if let data = data {
             json = try? JSONSerialization.jsonObject(with: data as Data, options: []) as AnyObject
          }
          success?(json)
          
-      }, failure: { data, error, statusCode in
-         if statusCode == 401 {
-            // Operation not authorized
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: DidPerformUnauthorizedOperation), object: nil)
-            return
-         }
-         
-         if let data = data {
-            let json = try? JSONSerialization.jsonObject(with: data as Data, options: []) as AnyObject
-            let info = [
-               NSLocalizedDescriptionKey: json?["error"] as? String ?? "",
-               NSLocalizedFailureReasonErrorKey: "Probably not allowed action."
-            ]
-            let error = NSError(domain: "IncNetworkRequestService", code: 0, userInfo: info)
+      }, failure: { data, result in
+         switch result {
+         case .requestError(let error):
             failure?(error)
-         } else {
-            failure?(error ?? NSError(domain: "IncNetworkRequestService", code: 0, userInfo: nil))
+         case .httpFailure(let statusCode):
+            if statusCode == 401 {
+               // Operation not authorized
+               NotificationCenter.default.post(name: NSNotification.Name(rawValue: DidPerformUnauthorizedOperation), object: nil)
+               return
+            }
+            fallthrough
+         default:
+            if let data = data {
+               if let json = try? JSONSerialization.jsonObject(with: data as Data, options: []) as AnyObject {
+                  let error = IncNetworkRequestServiceError.jsonData(json: json)
+                  failure?(error)
+               } else {
+                  failure?(IncNetworkRequestServiceError.nonJSONData)
+               }
+            } else {
+               failure?(IncNetworkRequestServiceError.noData)
+            }
          }
       })
    }

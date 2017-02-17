@@ -34,7 +34,7 @@ public class RouteOperation: IncNetworkRequestOperation {
    private let request: RouteRequest
    
    public var success: ((RouteItem) -> Void)?
-   public var failure: ((NSError) -> Void)?
+   public var failure: ((Error) -> Void)?
    
    public init(start: String, end: String) {
       request = RouteRequest(start: start, end: end)
@@ -52,11 +52,11 @@ public class RouteOperation: IncNetworkRequestOperation {
          self.success?(item)
          self.finish()
       } catch {
-         handleFailure(NSError.incNetworkCannotParseResponse())
+         handleFailure(error)
       }
    }
    
-   private func handleFailure(_ error: NSError) {
+   private func handleFailure(_ error: Error) {
       self.failure?(error)
       self.finish()
    }

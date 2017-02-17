@@ -5,7 +5,7 @@ protocol IncNetworkMapperProtocol {
    static func process(_ obj: AnyObject?) throws -> Item
 }
 
-internal enum IncNetworkMapperError: Error {
+public enum IncNetworkMapperError: Error {
    case invalid
    case missingAttribute
 }
