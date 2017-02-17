@@ -11,6 +11,8 @@
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		E94794B01E55364200DBD135 /* test-json in Resources */ = {isa = PBXBuildFile; fileRef = E94794AF1E55364200DBD135 /* test-json */; };
 		E94794B21E56293800DBD135 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94794B11E56293800DBD135 /* Route.swift */; };
+		E94794B41E5632E100DBD135 /* RouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94794B31E5632E100DBD135 /* RouteTests.swift */; };
+		E94794B61E56365D00DBD135 /* route-json in Resources */ = {isa = PBXBuildFile; fileRef = E94794B51E56365D00DBD135 /* route-json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +27,8 @@
 		D1E36D00A50BF4652E8BA025 /* IncNetworkLayer.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = IncNetworkLayer.podspec; path = ../IncNetworkLayer.podspec; sourceTree = "<group>"; };
 		E94794AF1E55364200DBD135 /* test-json */ = {isa = PBXFileReference; explicitFileType = text.json; fileEncoding = 4; path = "test-json"; sourceTree = "<group>"; };
 		E94794B11E56293800DBD135 /* Route.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
+		E94794B31E5632E100DBD135 /* RouteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouteTests.swift; sourceTree = "<group>"; };
+		E94794B51E56365D00DBD135 /* route-json */ = {isa = PBXFileReference; explicitFileType = text.json; fileEncoding = 4; path = "route-json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +66,9 @@
 			isa = PBXGroup;
 			children = (
 				E94794B11E56293800DBD135 /* Route.swift */,
+				E94794B31E5632E100DBD135 /* RouteTests.swift */,
 				607FACEB1AFB9204008FA782 /* Tests.swift */,
+				E94794B51E56365D00DBD135 /* route-json */,
 				E94794AF1E55364200DBD135 /* test-json */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
@@ -167,6 +173,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E94794B61E56365D00DBD135 /* route-json in Resources */,
 				E94794B01E55364200DBD135 /* test-json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -228,6 +235,7 @@
 			files = (
 				607FACEC1AFB9204008FA782 /* Tests.swift in Sources */,
 				E94794B21E56293800DBD135 /* Route.swift in Sources */,
+				E94794B41E5632E100DBD135 /* RouteTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
