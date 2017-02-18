@@ -1,14 +1,14 @@
 import Foundation
 
-open class IncNetworkRequestOperation<R: IncNetworkRequest, M: IncNetworkMapper>: IncNetworkOperation {
+open class IncNetworkRequestOperation<M: IncNetworkMapper>: IncNetworkOperation {
    
    private let _service: IncNetworkRequestService
-   private let _request: R
+   private let _request: IncNetworkRequest
    
    public var success: ((M.Item?) -> Void)?
    public var failure: ((Error) -> Void)?
 
-   public init(request: R) {
+   public init(request: IncNetworkRequest) {
       self._service = IncNetworkRequestService(IncNetworkRequestConfiguration.shared)
       self._request = request
       super.init()

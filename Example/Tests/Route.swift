@@ -31,7 +31,7 @@ final class RouteResponseMapper: IncNetworkObjectMapper<RouteItem>, IncNetworkMa
    }
 }
 
-final class RouteOperation: IncNetworkRequestOperation<RouteRequest, RouteResponseMapper> {
+final class RouteOperation: IncNetworkRequestOperation<RouteResponseMapper> {
    public init(start: String, end: String) {
       let request = RouteRequest(start: start, end: end)
       super.init(request: request)
