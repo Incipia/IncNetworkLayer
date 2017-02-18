@@ -31,36 +31,10 @@ final class RouteResponseMapper: IncNetworkObjectMapper<RouteItem>, IncNetworkMa
    }
 }
 
-public class RouteOperation: IncNetworkRequestOperation {
-   
-   private let _request: RouteRequest
-   
-   public var success: ((RouteItem?) -> Void)?
-   public var failure: ((Error) -> Void)?
-   
+final class RouteOperation: IncNetworkRequestOperation<RouteRequest, RouteResponseMapper> {
    public init(start: String, end: String) {
-      _request = RouteRequest(start: start, end: end)
-      super.init()
-   }
-   
-   public override func start() {
-      super.start()
-      service.request(_request, success: _handleSuccess, failure: _handleFailure)
-   }
-   
-   private func _handleSuccess(_ response: Any?) {
-      do {
-         let item = try RouteResponseMapper.process(response)
-         self.success?(item)
-         self.finish()
-      } catch {
-         _handleFailure(error)
-      }
-   }
-   
-   private func _handleFailure(_ error: Error) {
-      self.failure?(error)
-      self.finish()
+      let request = RouteRequest(start: start, end: end)
+      super.init(request: request)
    }
 }
 
