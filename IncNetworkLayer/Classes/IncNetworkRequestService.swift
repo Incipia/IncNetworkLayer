@@ -12,24 +12,24 @@ public indirect enum IncNetworkRequestServiceError: Error {
 
 public class IncNetworkRequestService {
    
-   private let conf: IncNetworkRequestConfiguration
-   private let service = IncNetworkService()
+   private let _configuration: IncNetworkRequestConfiguration
+   private let _service = IncNetworkService()
    
    init(_ conf: IncNetworkRequestConfiguration) {
-      self.conf = conf
+      self._configuration = conf
    }
    
    public func request(_ request: IncNetworkRequest,
                 success: ((Any?) -> Void)? = nil,
                 failure: ((Error) -> Void)? = nil) {
       
-      let url = conf.baseURL.appendingPathComponent(request.endpoint)
+      let url = _configuration.baseURL.appendingPathComponent(request.endpoint)
       
       var headers = request.headers
       // Set authentication token if available.
       //        headers?["X-Api-Auth-Token"] = BackendAuth.shared.token
       
-      service.makeRequest(for: url, method: request.method, query: request.query, params: request.parameters, headers: headers, success: { data, result in
+      _service.makeRequest(for: url, method: request.method, query: request.query, params: request.parameters, headers: headers, success: { data, result in
          var json: Any? = nil
          if let data = data {
             json = try? JSONSerialization.jsonObject(with: data as Data, options: [])
@@ -64,6 +64,6 @@ public class IncNetworkRequestService {
    }
    
    func cancel() {
-      service.cancel()
+      _service.cancel()
    }
 }

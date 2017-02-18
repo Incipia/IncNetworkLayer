@@ -38,32 +38,32 @@ final class RouteResponseMapper: IncNetworkObjectMapper<RouteItem>, IncNetworkMa
 
 public class RouteOperation: IncNetworkRequestOperation {
    
-   private let request: RouteRequest
+   private let _request: RouteRequest
    
    public var success: ((RouteItem?) -> Void)?
    public var failure: ((Error) -> Void)?
    
    public init(start: String, end: String) {
-      request = RouteRequest(start: start, end: end)
+      _request = RouteRequest(start: start, end: end)
       super.init()
    }
    
    public override func start() {
       super.start()
-      service.request(request, success: handleSuccess, failure: handleFailure)
+      service.request(_request, success: _handleSuccess, failure: _handleFailure)
    }
    
-   private func handleSuccess(_ response: Any?) {
+   private func _handleSuccess(_ response: Any?) {
       do {
          let item = try RouteResponseMapper.process(response)
          self.success?(item)
          self.finish()
       } catch {
-         handleFailure(error)
+         _handleFailure(error)
       }
    }
    
-   private func handleFailure(_ error: Error) {
+   private func _handleFailure(_ error: Error) {
       self.failure?(error)
       self.finish()
    }
@@ -71,12 +71,12 @@ public class RouteOperation: IncNetworkRequestOperation {
 
 final class RouteRequest: IncNetworkRequest {
    
-   private let start: String
-   private let end: String
+   private let _start: String
+   private let _end: String
    
    init(start: String, end: String) {
-      self.start = start
-      self.end = end
+      self._start = start
+      self._end = end
    }
    
    var endpoint: String {
@@ -93,8 +93,8 @@ final class RouteRequest: IncNetworkRequest {
    
    var parameters: [String : Any]? {
       return [
-         "start": start,
-         "end": end
+         "start": _start,
+         "end": _end
       ]
    }
    

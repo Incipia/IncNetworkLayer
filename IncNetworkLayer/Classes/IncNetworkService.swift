@@ -2,9 +2,9 @@ import Foundation
 
 public class IncNetworkService {
    
-   private var task: URLSessionDataTask?
-   private var successCodes: CountableClosedRange<Int> = 200...299
-   private var failureCodes: CountableClosedRange<Int> = 400...499
+   private var _task: URLSessionDataTask?
+   private var _successCodes: CountableClosedRange<Int> = 200...299
+   private var _failureCodes: CountableClosedRange<Int> = 400...499
    
    public enum Result {
       case httpSuccess(code: Int)
@@ -29,14 +29,14 @@ public class IncNetworkService {
                     failure: ((_ data: Data?, _ result: IncNetworkService.Result) -> Void)? = nil) {
       
       
-      var mutableRequest = makeQuery(for: url, params: params, type: type)
+      var mutableRequest = _makeQuery(for: url, params: params, type: type)
       
       mutableRequest.allHTTPHeaderFields = headers
       mutableRequest.httpMethod = method.rawValue
       
       let session = URLSession.shared
       
-      task = session.dataTask(with: mutableRequest as URLRequest, completionHandler: { (data, response, error) in
+      _task = session.dataTask(with: mutableRequest as URLRequest, completionHandler: { (data, response, error) in
          guard error == nil else {
             // Request failed, might be internet connection issue
             let error = error!
@@ -50,10 +50,10 @@ public class IncNetworkService {
          
          let statusCode = httpResponse.statusCode
          switch statusCode {
-         case let statusCode where self.successCodes.contains(statusCode):
+         case let statusCode where self._successCodes.contains(statusCode):
             print("Request finished with success code \(statusCode).")
             success?(data, .httpSuccess(code: statusCode))
-         case let statusCode where self.failureCodes.contains(statusCode):
+         case let statusCode where self._failureCodes.contains(statusCode):
             print("Request finished with failure code \(statusCode).")
             failure?(data, .httpFailure(code: statusCode))
          default:
@@ -64,16 +64,14 @@ public class IncNetworkService {
          }
       })
       
-      task?.resume()
+      _task?.resume()
    }
    
    func cancel() {
-      task?.cancel()
+      _task?.cancel()
    }
    
-   
-   //MARK: Private
-   private func makeQuery(for url: URL, params: [String: Any]?, type: QueryType) -> URLRequest {
+   private func _makeQuery(for url: URL, params: [String: Any]?, type: QueryType) -> URLRequest {
       switch type {
       case .json:
          var mutableRequest = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
