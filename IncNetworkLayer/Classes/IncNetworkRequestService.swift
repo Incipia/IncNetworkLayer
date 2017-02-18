@@ -2,7 +2,9 @@ import Foundation
 
 public let DidPerformUnauthorizedOperation = "DidPerformUnauthorizedOperation"
 
-public enum IncNetworkRequestServiceError: Error {
+public indirect enum IncNetworkRequestServiceError: Error {
+   case request(error: Error, data: IncNetworkRequestServiceError)
+   case httpResponse(code: Int, data: IncNetworkRequestServiceError)
    case noData
    case nonJSONData
    case jsonData(json: Any)
@@ -35,27 +37,28 @@ public class IncNetworkRequestService {
          success?(json)
          
       }, failure: { data, result in
+         let dataError = { () -> IncNetworkRequestServiceError in 
+            if let data = data {
+               if let json = try? JSONSerialization.jsonObject(with: data as Data, options: []) as AnyObject {
+                  return IncNetworkRequestServiceError.jsonData(json: json)
+               } else {
+                  return IncNetworkRequestServiceError.nonJSONData
+               }
+            } else {
+               return IncNetworkRequestServiceError.noData
+            }
+         }()
+
          switch result {
-         case .requestError(let error):
-            failure?(error)
+         case .requestError(let error): failure?(IncNetworkRequestServiceError.request(error: error, data: dataError))
          case .httpFailure(let statusCode):
             if statusCode == 401 {
                // Operation not authorized
                NotificationCenter.default.post(name: NSNotification.Name(rawValue: DidPerformUnauthorizedOperation), object: nil)
-               return
             }
-            fallthrough
-         default:
-            if let data = data {
-               if let json = try? JSONSerialization.jsonObject(with: data as Data, options: []) as AnyObject {
-                  let error = IncNetworkRequestServiceError.jsonData(json: json)
-                  failure?(error)
-               } else {
-                  failure?(IncNetworkRequestServiceError.nonJSONData)
-               }
-            } else {
-               failure?(IncNetworkRequestServiceError.noData)
-            }
+            failure?(IncNetworkRequestServiceError.httpResponse(code: statusCode, data: dataError))
+         case .unexpectedStatus(let statusCode): failure?(IncNetworkRequestServiceError.httpResponse(code: statusCode, data: dataError))
+         default: failure?(dataError)
          }
       })
    }
