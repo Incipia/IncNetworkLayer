@@ -18,7 +18,7 @@ public class IncNetworkRequestService {
    }
    
    public func request(_ request: IncNetworkRequest,
-                success: ((AnyObject?) -> Void)? = nil,
+                success: ((Any?) -> Void)? = nil,
                 failure: ((Error) -> Void)? = nil) {
       
       let url = conf.baseURL.appendingPathComponent(request.endpoint)
@@ -28,9 +28,9 @@ public class IncNetworkRequestService {
       //        headers?["X-Api-Auth-Token"] = BackendAuth.shared.token
       
       service.makeRequest(for: url, method: request.method, query: request.query, params: request.parameters, headers: headers, success: { data, result in
-         var json: AnyObject? = nil
+         var json: Any? = nil
          if let data = data {
-            json = try? JSONSerialization.jsonObject(with: data as Data, options: []) as AnyObject
+            json = try? JSONSerialization.jsonObject(with: data as Data, options: [])
          }
          success?(json)
          

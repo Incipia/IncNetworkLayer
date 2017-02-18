@@ -15,17 +15,24 @@ public struct RouteItem: IncNetworkParsedItem {
    public let confidence: Double
 }
 
-final class RouteResponseMapper: IncNetworkMapper<RouteItem>, IncNetworkParsedItem {
+final class RouteResponseMapper: IncNetworkObjectMapper<RouteItem>, IncNetworkMapper {
+   private enum Attribute: String {
+      case route, confidence
+   }
    
-   static func process(_ obj: AnyObject?) throws -> RouteItem {
-      return try process(obj, parse: { json in
-         let route = json["route"] as? String
-         let confidence = json["confidence"] as? Double
-         if let route = route, let confidence = confidence {
-            return RouteItem(route: route, confidence: confidence)
-         }
-         return nil
-      })
+   static func process(_ obj: Any?) throws -> RouteItem? {
+      let item = try process(obj) { json in
+         guard let route = json[Attribute.route.rawValue] as? String else { throw IncNetworkMapperError.invalidAttribute(name: Attribute.route.rawValue) }
+         guard let confidence = json[Attribute.confidence.rawValue] as? Double else { throw IncNetworkMapperError.invalidAttribute(name: Attribute.confidence.rawValue) }
+         let item = RouteItem(route: route, confidence: confidence)
+         return item
+      }
+
+      if let item = item {
+         return item
+      } else {
+         throw IncNetworkMapperError.invalid
+      }
    }
 }
 
@@ -33,7 +40,7 @@ public class RouteOperation: IncNetworkRequestOperation {
    
    private let request: RouteRequest
    
-   public var success: ((RouteItem) -> Void)?
+   public var success: ((RouteItem?) -> Void)?
    public var failure: ((Error) -> Void)?
    
    public init(start: String, end: String) {
@@ -46,7 +53,7 @@ public class RouteOperation: IncNetworkRequestOperation {
       service.request(request, success: handleSuccess, failure: handleFailure)
    }
    
-   private func handleSuccess(_ response: AnyObject?) {
+   private func handleSuccess(_ response: Any?) {
       do {
          let item = try RouteResponseMapper.process(response)
          self.success?(item)
