@@ -9,7 +9,7 @@
 import Foundation
 import IncNetworkLayer
 
-public struct RouteItem: IncNetworkParsedItem {
+struct RouteItem: IncNetworkParsedItem {
    
    public let route: String
    public let confidence: Double
