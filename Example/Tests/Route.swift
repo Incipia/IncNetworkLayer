@@ -27,12 +27,7 @@ final class RouteResponseMapper: IncNetworkObjectMapper<RouteItem>, IncNetworkMa
          let item = RouteItem(route: route, confidence: confidence)
          return item
       }
-
-      if let item = item {
-         return item
-      } else {
-         throw IncNetworkMapperError.invalid
-      }
+      return item
    }
 }
 
