@@ -50,10 +50,6 @@ final class RouteRequest: IncNetworkRequest {
    
    var endpoint: String { return "/route-json" }
    
-   var method: IncNetworkService.Method { return .post }
-   
-   var query: IncNetworkService.QueryType { return .json }
-   
    var parameters: [String : Any]? {
       return [
          "start": _start,
@@ -61,7 +57,4 @@ final class RouteRequest: IncNetworkRequest {
       ]
    }
    
-   var headers: [String : String]? { return defaultJSONHeaders() }
-   
-   var expectJSON: Bool { return true }
 }
