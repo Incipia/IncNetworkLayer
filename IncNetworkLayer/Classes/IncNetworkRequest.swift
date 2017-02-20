@@ -6,6 +6,7 @@ public protocol IncNetworkRequest {
    var query: IncNetworkService.QueryType { get }
    var parameters: [String: Any]? { get }
    var headers: [String: String]? { get }
+   var expectJSON: Bool { get }
 }
 
 extension IncNetworkRequest {

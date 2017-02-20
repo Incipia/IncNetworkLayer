@@ -6,8 +6,9 @@ public indirect enum IncNetworkRequestServiceError: Error {
    case request(error: Error, data: IncNetworkRequestServiceError)
    case httpResponse(code: Int, data: IncNetworkRequestServiceError)
    case noData
-   case nonJSONData
+   case data(data: Data)
    case jsonData(json: Any)
+   case nonJSONData(error: Error, data: Data)
 }
 
 public class IncNetworkRequestService {
@@ -30,19 +31,31 @@ public class IncNetworkRequestService {
       //        headers?["X-Api-Auth-Token"] = BackendAuth.shared.token
       
       _service.makeRequest(for: url, method: request.method, query: request.query, params: request.parameters, headers: headers, success: { data, result in
-         var json: Any? = nil
-         if let data = data {
-            json = try? JSONSerialization.jsonObject(with: data as Data, options: [])
+         if let data = data, request.expectJSON {
+            do {
+               let json = try JSONSerialization.jsonObject(with: data as Data, options: [])
+               success?(json)
+            }
+            catch {
+               failure?(IncNetworkRequestServiceError.nonJSONData(error: error, data: data))
+            }
+         } else {
+            success?(data)
          }
-         success?(json)
          
       }, failure: { data, result in
-         let dataError = { () -> IncNetworkRequestServiceError in 
+         let dataError = { () -> IncNetworkRequestServiceError in
             if let data = data {
-               if let json = try? JSONSerialization.jsonObject(with: data as Data, options: []) as AnyObject {
-                  return IncNetworkRequestServiceError.jsonData(json: json)
+               if request.expectJSON {
+                  do {
+                     let json = try JSONSerialization.jsonObject(with: data as Data, options: [])
+                     return IncNetworkRequestServiceError.jsonData(json: json)
+                  }
+                  catch {
+                     return IncNetworkRequestServiceError.nonJSONData(error: error, data: data)
+                  }
                } else {
-                  return IncNetworkRequestServiceError.nonJSONData
+                  return IncNetworkRequestServiceError.data(data: data)
                }
             } else {
                return IncNetworkRequestServiceError.noData
