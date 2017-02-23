@@ -1,6 +1,6 @@
 import Foundation
 
-final class IncNetworkArrayMapper<M: IncNetworkMapper>: IncNetworkMapper {
+public final class IncNetworkArrayMapper<M: IncNetworkMapper>: IncNetworkMapper {
    
    public static func process(_ obj: Any?) throws -> [M.Item]? {
       guard let obj = obj else { return nil }

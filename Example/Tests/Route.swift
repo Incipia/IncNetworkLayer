@@ -9,26 +9,24 @@
 import Foundation
 import IncNetworkLayer
 
-struct RouteItem: IncNetworkParsedItem {
-   
-   public let route: String
-   public let confidence: Double
-}
-
-final class RouteResponseMapper: IncNetworkMapper {
+struct RouteItem: IncNetworkParsedItem, IncNetworkJSONInitable {
    private enum Attribute: String {
       case route, confidence
    }
    
-   static func process(_ obj: Any?) throws -> RouteItem? {
-      guard let obj = obj else { return nil }
-      guard let json = obj as? [String : Any] else { throw IncNetworkMapperError.invalid }
-      guard let route = json[Attribute.route.rawValue] as? String else { throw IncNetworkMapperError.invalidAttribute(name: Attribute.route.rawValue) }
-      guard let confidence = json[Attribute.confidence.rawValue] as? Double else { throw IncNetworkMapperError.invalidAttribute(name: Attribute.confidence.rawValue) }
-      let item = RouteItem(route: route, confidence: confidence)
-      return item
+   public let route: String
+   public let confidence: Double
+   
+   init?(with json: Any) {
+      guard let json = json as? [String : Any],
+         let route = json[Attribute.route.rawValue] as? String,
+         let confidence = json[Attribute.confidence.rawValue] as? Double else { return nil }
+      self.route = route
+      self.confidence = confidence
    }
 }
+
+typealias RouteResponseMapper = IncNetworkJSONMapper<RouteItem>
 
 final class RouteOperation: IncNetworkRequestOperation<RouteResponseMapper> {
    public init(start: String, end: String) {
