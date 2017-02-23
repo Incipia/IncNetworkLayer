@@ -5,10 +5,10 @@ public let DidPerformUnauthorizedOperation = "DidPerformUnauthorizedOperation"
 public indirect enum IncNetworkRequestServiceError: Error {
    case request(error: Error, data: IncNetworkRequestServiceError)
    case httpResponse(code: Int, data: IncNetworkRequestServiceError)
+   case invalidData(error: Error, data: IncNetworkRequestServiceError)
+   case decodedData(decoded: Any?, data: IncNetworkRequestServiceError)
    case noData
    case data(data: Data)
-   case jsonData(json: Any)
-   case nonJSONData(error: Error, data: Data)
 }
 
 public class IncNetworkRequestService {
@@ -31,28 +31,24 @@ public class IncNetworkRequestService {
       //        headers?["X-Api-Auth-Token"] = BackendAuth.shared.token
       
       _service.makeRequest(for: url, method: request.method, body: request.body, query: request.query, headers: headers, success: { data, result in
-         if let data = data, request.expectJSON {
-            do {
-               let json = try JSONSerialization.jsonObject(with: data as Data, options: [])
-               success?(json)
-            }
-            catch {
-               failure?(IncNetworkRequestServiceError.nonJSONData(error: error, data: data))
-            }
-         } else {
-            success?(data)
+         do {
+            let response = try request.decode(response: data)
+            success?(response)
+         }
+         catch {
+            let dataError: IncNetworkRequestServiceError = data == nil ? .noData : .data(data: data!)
+            failure?(IncNetworkRequestServiceError.invalidData(error: error, data: dataError))
          }
          
       }, failure: { data, result in
          let dataError: IncNetworkRequestServiceError = {
-            guard let data = data else { return .noData }
-            guard request.expectJSON else { return .data(data: data) }
+            let rawDataError: IncNetworkRequestServiceError = data == nil ? .noData : .data(data: data!)
             do {
-               let json = try JSONSerialization.jsonObject(with: data as Data, options: [])
-               return .jsonData(json: json)
+               let decoded = try request.decode(response: data)
+               return .decodedData(decoded: decoded, data: rawDataError)
             }
             catch {
-               return .nonJSONData(error: error, data: data)
+               return .invalidData(error: error, data: rawDataError)
             }
          }()
 
