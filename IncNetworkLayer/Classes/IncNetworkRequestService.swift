@@ -44,21 +44,15 @@ public class IncNetworkRequestService {
          }
          
       }, failure: { data, result in
-         let dataError = { () -> IncNetworkRequestServiceError in
-            if let data = data {
-               if request.expectJSON {
-                  do {
-                     let json = try JSONSerialization.jsonObject(with: data as Data, options: [])
-                     return IncNetworkRequestServiceError.jsonData(json: json)
-                  }
-                  catch {
-                     return IncNetworkRequestServiceError.nonJSONData(error: error, data: data)
-                  }
-               } else {
-                  return IncNetworkRequestServiceError.data(data: data)
-               }
-            } else {
-               return IncNetworkRequestServiceError.noData
+         let dataError: IncNetworkRequestServiceError = {
+            guard let data = data else { return .noData }
+            guard request.expectJSON else { return .data(data: data) }
+            do {
+               let json = try JSONSerialization.jsonObject(with: data as Data, options: [])
+               return .jsonData(json: json)
+            }
+            catch {
+               return .nonJSONData(error: error, data: data)
             }
          }()
 
