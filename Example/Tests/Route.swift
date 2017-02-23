@@ -48,11 +48,11 @@ final class RouteRequest: IncNetworkRequest {
    
    var endpoint: String { return "/route-json" }
    
-   var parameters: [String : Any]? {
-      return [
+   var body: Data? {
+      return body(with: [
          "start": _start,
          "end": _end
-      ]
+      ])
    }
    
 }

@@ -30,7 +30,7 @@ public class IncNetworkRequestService {
       // Set authentication token if available.
       //        headers?["X-Api-Auth-Token"] = BackendAuth.shared.token
       
-      _service.makeRequest(for: url, method: request.method, query: request.query, params: request.parameters, headers: headers, success: { data, result in
+      _service.makeRequest(for: url, method: request.method, body: request.body, query: request.query, headers: headers, success: { data, result in
          if let data = data, request.expectJSON {
             do {
                let json = try JSONSerialization.jsonObject(with: data as Data, options: [])

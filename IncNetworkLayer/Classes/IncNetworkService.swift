@@ -18,18 +18,15 @@ public class IncNetworkService {
       case get, post, put, delete
    }
    
-   public enum QueryType {
-      case json, path
-   }
-   
-   func makeRequest(for url: URL, method: Method, query type: QueryType,
-                    params: [String: Any]? = nil,
+   func makeRequest(for url: URL, method: Method,
+                    body: Data? = nil,
+                    query: String? = nil,
                     headers: [String: String]? = nil,
                     success: ((_ data: Data?, _ result: IncNetworkService.Result) -> Void)? = nil,
                     failure: ((_ data: Data?, _ result: IncNetworkService.Result) -> Void)? = nil) {
       
       
-      var mutableRequest = _makeQuery(for: url, params: params, type: type)
+      var mutableRequest = _makeQuery(for: url, body: body, query: query)
       
       mutableRequest.allHTTPHeaderFields = headers
       mutableRequest.httpMethod = method.rawValue
@@ -71,29 +68,23 @@ public class IncNetworkService {
       _task?.cancel()
    }
    
-   private func _makeQuery(for url: URL, params: [String: Any]?, type: QueryType) -> URLRequest {
-      switch type {
-      case .json:
-         var mutableRequest = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
-                                         timeoutInterval: 10.0)
-         if let params = params {
-            mutableRequest.httpBody = try! JSONSerialization.data(withJSONObject: params, options: [])
-         }
-         
-         return mutableRequest
-      case .path:
-         var query = ""
-         
-         params?.forEach { key, value in
-            query = query + "\(key)=\(value)&"
-         }
-         
+   private func _makeQuery(for url: URL, body: Data?, query: String?) -> URLRequest {
+      var queryURL: URL;
+      if let query = query {
          var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
          components.query = query
-         
-         return URLRequest(url: components.url!, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 10.0)
+         queryURL = components.url!
+      } else {
+         queryURL = url
       }
       
+      var request = URLRequest(url: queryURL, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 10.0)
+      
+      if let body = body {
+         request.httpBody = body
+      }
+      
+      return request
    }
 }
 
