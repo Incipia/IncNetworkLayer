@@ -15,18 +15,17 @@ struct RouteItem: IncNetworkParsedItem {
    public let confidence: Double
 }
 
-final class RouteResponseMapper: IncNetworkObjectMapper<RouteItem>, IncNetworkMapper {
+final class RouteResponseMapper: IncNetworkMapper {
    private enum Attribute: String {
       case route, confidence
    }
    
    static func process(_ obj: Any?) throws -> RouteItem? {
-      let item = try process(obj) { json in
-         guard let route = json[Attribute.route.rawValue] as? String else { throw IncNetworkMapperError.invalidAttribute(name: Attribute.route.rawValue) }
-         guard let confidence = json[Attribute.confidence.rawValue] as? Double else { throw IncNetworkMapperError.invalidAttribute(name: Attribute.confidence.rawValue) }
-         let item = RouteItem(route: route, confidence: confidence)
-         return item
-      }
+      guard let obj = obj else { return nil }
+      guard let json = obj as? [String : Any] else { throw IncNetworkMapperError.invalid }
+      guard let route = json[Attribute.route.rawValue] as? String else { throw IncNetworkMapperError.invalidAttribute(name: Attribute.route.rawValue) }
+      guard let confidence = json[Attribute.confidence.rawValue] as? Double else { throw IncNetworkMapperError.invalidAttribute(name: Attribute.confidence.rawValue) }
+      let item = RouteItem(route: route, confidence: confidence)
       return item
    }
 }

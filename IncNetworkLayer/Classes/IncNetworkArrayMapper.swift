@@ -1,14 +1,14 @@
 import Foundation
 
-open class IncNetworkArrayMapper<A: IncNetworkParsedItem> {
+final class IncNetworkArrayMapper<M: IncNetworkMapper>: IncNetworkMapper {
    
-   static func process(_ obj: Any?, parse: ((_ json: Any) throws -> A?)) throws -> [A]? {
+   public static func process(_ obj: Any?) throws -> [M.Item]? {
       guard let obj = obj else { return nil }
       guard let json = obj as? [Any] else { throw IncNetworkMapperError.invalid }
       
-      var items = [A]()
+      var items: [M.Item] = []
       for jsonNode in json {
-         if let item = try parse(jsonNode) {
+         if let item = try M.process(jsonNode) {
             items.append(item)
          }
       }
