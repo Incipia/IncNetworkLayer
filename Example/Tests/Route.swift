@@ -36,7 +36,7 @@ final class RouteOperation: IncNetworkRequestOperation<RouteResponseMapper> {
    }
 }
 
-final class RouteRequest: IncNetworkRequest {
+final class RouteRequest: IncNetworkJSONRequest {
    
    private let _start: String
    private let _end: String
