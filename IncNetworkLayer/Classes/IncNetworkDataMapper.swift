@@ -14,7 +14,7 @@ public final class IncNetworkDataMapper<A: IncNetworkDataInitable>: IncNetworkMa
       guard let obj = obj else { return nil }
       guard let data = obj as? Data else { throw IncNetworkMapperError.invalid }
       
-      guard let item = A(with: data) else { throw IncNetworkMapperError.itemInitFailed }
+      guard let item = try A(with: data) else { throw IncNetworkMapperError.itemInitFailed }
 
       return item
    }

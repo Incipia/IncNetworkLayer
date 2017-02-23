@@ -17,10 +17,11 @@ struct RouteItem: IncNetworkParsedItem, IncNetworkJSONInitable {
    public let route: String
    public let confidence: Double
    
-   init?(with json: Any) {
-      guard let json = json as? [String : Any],
-         let route = json[Attribute.route.rawValue] as? String,
-         let confidence = json[Attribute.confidence.rawValue] as? Double else { return nil }
+   init?(with json: Any) throws {
+      guard let json = json as? [String : Any] else { throw IncNetworkMapperError.invalid }
+      guard let route = json[Attribute.route.rawValue] as? String else { throw IncNetworkMapperError.invalidAttribute(name: Attribute.route.rawValue) }
+      guard let confidence = json[Attribute.confidence.rawValue] as? Double else { throw IncNetworkMapperError.invalidAttribute(name: Attribute.confidence.rawValue) }
+      
       self.route = route
       self.confidence = confidence
    }

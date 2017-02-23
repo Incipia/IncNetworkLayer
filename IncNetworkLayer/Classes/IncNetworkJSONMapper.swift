@@ -13,7 +13,7 @@ public final class IncNetworkJSONMapper<A: IncNetworkJSONInitable>: IncNetworkMa
    public static func process(_ obj: Any?) throws -> A? {
       guard let obj = obj else { return nil }
       
-      guard let item = A(with: obj) else { throw IncNetworkMapperError.itemInitFailed }
+      guard let item = try A(with: obj) else { throw IncNetworkMapperError.itemInitFailed }
       
       return item
    }
