@@ -26,6 +26,9 @@
 		E95043341E5E687300AB4D20 /* IncNetworkDataMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95043331E5E687300AB4D20 /* IncNetworkDataMapper.swift */; };
 		E95043381E5E6A9F00AB4D20 /* IncNetworkJSONMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95043371E5E6A9F00AB4D20 /* IncNetworkJSONMapper.swift */; };
 		E950433A1E5F6C7700AB4D20 /* IncNetworkJSONRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95043391E5F6C7700AB4D20 /* IncNetworkJSONRequest.swift */; };
+		E950433C1E5F885C00AB4D20 /* IncNetworkParameterItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E950433B1E5F885C00AB4D20 /* IncNetworkParameterItem.swift */; };
+		E950433E1E5F8B4D00AB4D20 /* IncNetworkJSONParameterRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E950433D1E5F8B4D00AB4D20 /* IncNetworkJSONParameterRequest.swift */; };
+		E95043401E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E950433F1E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift */; };
 		E9AE549C1E57BD1B0069C47D /* IncNetworkObjectMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AE549B1E57BD1B0069C47D /* IncNetworkObjectMapper.swift */; };
 /* End PBXBuildFile section */
 
@@ -73,6 +76,9 @@
 		E95043331E5E687300AB4D20 /* IncNetworkDataMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkDataMapper.swift; sourceTree = "<group>"; };
 		E95043371E5E6A9F00AB4D20 /* IncNetworkJSONMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkJSONMapper.swift; sourceTree = "<group>"; };
 		E95043391E5F6C7700AB4D20 /* IncNetworkJSONRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkJSONRequest.swift; sourceTree = "<group>"; };
+		E950433B1E5F885C00AB4D20 /* IncNetworkParameterItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkParameterItem.swift; sourceTree = "<group>"; };
+		E950433D1E5F8B4D00AB4D20 /* IncNetworkJSONParameterRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkJSONParameterRequest.swift; sourceTree = "<group>"; };
+		E950433F1E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkDataParameterRequest.swift; sourceTree = "<group>"; };
 		E9AE549B1E57BD1B0069C47D /* IncNetworkObjectMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkObjectMapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -188,6 +194,8 @@
 			children = (
 				E94794951E5526D600DBD135 /* IncNetworkRequest.swift */,
 				E95043391E5F6C7700AB4D20 /* IncNetworkJSONRequest.swift */,
+				E950433D1E5F8B4D00AB4D20 /* IncNetworkJSONParameterRequest.swift */,
+				E950433F1E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift */,
 				E94794961E5526D600DBD135 /* IncNetworkRequestConfiguration.swift */,
 				E94794971E5526D600DBD135 /* IncNetworkRequestService.swift */,
 				E94794981E5526D600DBD135 /* IncNetworkRequestOperation.swift */,
@@ -221,6 +229,7 @@
 			isa = PBXGroup;
 			children = (
 				E94794AD1E55279600DBD135 /* IncNetworkParsedItem.swift */,
+				E950433B1E5F885C00AB4D20 /* IncNetworkParameterItem.swift */,
 			);
 			name = Items;
 			sourceTree = "<group>";
@@ -360,9 +369,12 @@
 				E94794A01E55272200DBD135 /* IncNetworkArrayMapper.swift in Sources */,
 				E947949C1E5526D600DBD135 /* IncNetworkRequestOperation.swift in Sources */,
 				E950433A1E5F6C7700AB4D20 /* IncNetworkJSONRequest.swift in Sources */,
+				E950433C1E5F885C00AB4D20 /* IncNetworkParameterItem.swift in Sources */,
 				E94794991E5526D600DBD135 /* IncNetworkRequest.swift in Sources */,
 				E95043341E5E687300AB4D20 /* IncNetworkDataMapper.swift in Sources */,
+				E950433E1E5F8B4D00AB4D20 /* IncNetworkJSONParameterRequest.swift in Sources */,
 				E9AE549C1E57BD1B0069C47D /* IncNetworkObjectMapper.swift in Sources */,
+				E95043401E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

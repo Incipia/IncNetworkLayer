@@ -9,6 +9,18 @@
 import Foundation
 import IncNetworkLayer
 
+struct RouteParameter: IncNetworkJSONRepresentable {
+   let start: String
+   let end: String
+   
+   var jsonRepresentation: Any? {
+      return [
+         "start": start,
+         "end": end
+      ]
+   }
+}
+
 struct RouteItem: IncNetworkParsedItem, IncNetworkJSONInitable {
    private enum Attribute: String {
       case route, confidence
@@ -56,3 +68,27 @@ final class RouteRequest: IncNetworkJSONRequest {
    }
    
 }
+
+final class RouteParameterOperation: IncNetworkRequestOperation<RouteResponseMapper> {
+   public init(parameter: RouteParameter) {
+      let request = RouteObjectRequest(parameter: parameter)
+      super.init(request: request)
+   }
+}
+
+struct RouteParameterRequest: IncNetworkJSONParameterRequest {
+   var parameter: RouteParameter?
+   var endpoint: String { return "/route-json" }
+}
+
+final class RouteObjectOperation: IncNetworkRequestOperation<RouteResponseMapper> {
+   public init(parameter: RouteParameter) {
+      let request = RouteObjectRequest(parameter: parameter)
+      super.init(request: request)
+   }
+}
+
+final class RouteObjectRequest: IncNetworkJSONRequestObject<RouteParameter> {
+   override var endpoint: String { return "/route-json" }
+}
+

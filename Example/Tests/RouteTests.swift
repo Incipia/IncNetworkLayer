@@ -24,8 +24,8 @@ class RouteTests: XCTestCase {
       super.tearDown()
    }
    
-   func testRoute() {
-         let routeOperation = RouteOperation(start: "here", end: "Shell Beach")
+   func testRouteOperation() {
+      let routeOperation = RouteOperation(start: "here", end: "Shell Beach")
       routeOperation.success = { routeItem in
          XCTAssertNotNil(routeItem)
          print("Route item: \(routeItem)")
@@ -36,4 +36,33 @@ class RouteTests: XCTestCase {
       }
       IncNetworkQueue.shared.addOperation(routeOperation)
    }
+
+   func testRouteParameterOperation() {
+      let routeParameter = RouteParameter(start: "here", end: "Shell Beach")
+      let routeOperation = RouteParameterOperation(parameter: routeParameter)
+      routeOperation.success = { routeItem in
+         XCTAssertNotNil(routeItem)
+         print("Route item: \(routeItem)")
+      }
+      routeOperation.failure = { error in
+         XCTFail()
+         print("Route error: \(error.localizedDescription)")
+      }
+      IncNetworkQueue.shared.addOperation(routeOperation)
+   }
+
+   func testRouteObjectOperation() {
+      let routeParameter = RouteParameter(start: "here", end: "Shell Beach")
+      let routeOperation = RouteObjectOperation(parameter: routeParameter)
+      routeOperation.success = { routeItem in
+         XCTAssertNotNil(routeItem)
+         print("Route item: \(routeItem)")
+      }
+      routeOperation.failure = { error in
+         XCTFail()
+         print("Route error: \(error.localizedDescription)")
+      }
+      IncNetworkQueue.shared.addOperation(routeOperation)
+   }
+
 }
