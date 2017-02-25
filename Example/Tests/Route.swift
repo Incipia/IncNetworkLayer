@@ -71,7 +71,7 @@ final class RouteRequest: IncNetworkJSONRequest {
 
 final class RouteParameterOperation: IncNetworkRequestOperation<RouteResponseMapper> {
    public init(parameter: RouteParameter) {
-      let request = RouteObjectRequest(parameter: parameter)
+      let request = RouteParameterRequest(parameter: parameter)
       super.init(request: request)
    }
 }
