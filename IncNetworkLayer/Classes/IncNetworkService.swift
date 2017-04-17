@@ -15,7 +15,7 @@ public class IncNetworkService {
    }
    
    public enum Method: String {
-      case get, post, put, delete
+      case get = "GET", post = "POST", put = "PUT", patch = "PATCH", delete = "DELETE"
    }
    
    func makeRequest(for url: URL, method: Method,
