@@ -23,11 +23,7 @@ open class IncNetworkJSONRequestObject<P: IncNetworkJSONRepresentable>: IncNetwo
    open var endpoint: String { return "/" }
    public let parameter: P?
    
-   public init() {
-      parameter = nil
-   }
-   
-   public init(parameter: P) {
+   public init(parameter: P?) {
       self.parameter = parameter
    }
 }
