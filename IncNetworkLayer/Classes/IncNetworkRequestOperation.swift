@@ -1,12 +1,17 @@
 import Foundation
 
-open class IncNetworkRequestOperation<M: IncNetworkMapper>: IncNetworkOperation {
-   
+public enum IncNetworkRequestOperationResult<SuccessType, ErrorType> {
+   case success(SuccessType)
+   case nullSuccess
+   case error(ErrorType, Error)
+   case failure(Error)
+}
+
+open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapper: IncNetworkMapper>: IncNetworkOperation {
    private let _service: IncNetworkRequestService
    private let _request: IncNetworkRequest
    
-   public var success: ((M.Item?) -> Void)?
-   public var failure: ((Error) -> Void)?
+   public var completion: ((IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) -> Void)?
 
    public init(request: IncNetworkRequest) {
       self._service = IncNetworkRequestService(IncNetworkRequestConfiguration.shared)
@@ -16,17 +21,35 @@ open class IncNetworkRequestOperation<M: IncNetworkMapper>: IncNetworkOperation 
 
    private func _handleSuccess(_ response: Any?) {
       do {
-         let item = try M.process(response)
-         self.success?(item)
+         if let item = try SuccessMapper.process(response) {
+            self.completion?(.success(item))
+         } else {
+            self.completion?(.nullSuccess)
+         }
          self.finish()
       } catch {
-         _handleFailure(error)
+         self.completion?(.failure(error))
+         self.finish()
       }
    }
    
-   private func _handleFailure(_ error: Error) {
-      self.failure?(error)
-      self.finish()
+   private func _handleFailure(_ error: Error, data: Data?) {
+      defer { finish() }
+      do {
+         if let error = error as? IncNetworkRequestServiceError {
+            switch error {
+            case .decodedData(let response):
+               if let item = try ErrorMapper.process(response) {
+                  completion?(.error(item, error))
+               }
+            default: completion?(.failure(error))
+            }
+         } else {
+            completion?(.failure(error))
+         }
+      } catch {
+         completion?(.failure(error))
+      }
    }
 
    open override func cancel() {

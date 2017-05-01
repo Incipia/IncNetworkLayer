@@ -26,13 +26,18 @@ class RouteTests: XCTestCase {
    
    func testRouteOperation() {
       let routeOperation = RouteOperation(start: "here", end: "Shell Beach")
-      routeOperation.success = { routeItem in
-         XCTAssertNotNil(routeItem)
-         print("Route item: \(routeItem)")
-      }
-      routeOperation.failure = { error in
-         XCTFail()
-         print("Route error: \(error.localizedDescription)")
+      routeOperation.completion = { result in
+         switch result {
+         case .success(let routeItem):
+            XCTAssertNotNil(routeItem)
+            print("Route item: \(routeItem)")
+         case .nullSuccess:
+            XCTFail()
+            print("Route item was not retrieved")
+         case .error(_, let error), .failure(let error):
+            XCTFail()
+            print("Route error: \(error.localizedDescription)")
+         }
       }
       IncNetworkQueue.shared.addOperation(routeOperation)
    }
@@ -40,13 +45,18 @@ class RouteTests: XCTestCase {
    func testRouteParameterOperation() {
       let routeParameter = RouteParameter(start: "here", end: "Shell Beach")
       let routeOperation = RouteParameterOperation(parameter: routeParameter)
-      routeOperation.success = { routeItem in
-         XCTAssertNotNil(routeItem)
-         print("Route item: \(routeItem)")
-      }
-      routeOperation.failure = { error in
-         XCTFail()
-         print("Route error: \(error.localizedDescription)")
+      routeOperation.completion = { result in
+         switch result {
+         case .success(let routeItem):
+            XCTAssertNotNil(routeItem)
+            print("Route item: \(routeItem)")
+         case .nullSuccess:
+            XCTFail()
+            print("Route item was not retrieved")
+         case .error(_, let error), .failure(let error):
+            XCTFail()
+            print("Route error: \(error.localizedDescription)")
+         }
       }
       IncNetworkQueue.shared.addOperation(routeOperation)
    }
@@ -54,13 +64,18 @@ class RouteTests: XCTestCase {
    func testRouteObjectOperation() {
       let routeParameter = RouteParameter(start: "here", end: "Shell Beach")
       let routeOperation = RouteObjectOperation(parameter: routeParameter)
-      routeOperation.success = { routeItem in
-         XCTAssertNotNil(routeItem)
-         print("Route item: \(routeItem)")
-      }
-      routeOperation.failure = { error in
-         XCTFail()
-         print("Route error: \(error.localizedDescription)")
+      routeOperation.completion = { result in
+         switch result {
+         case .success(let routeItem):
+            XCTAssertNotNil(routeItem)
+            print("Route item: \(routeItem)")
+         case .nullSuccess:
+            XCTFail()
+            print("Route item was not retrieved")
+         case .error(_, let error), .failure(let error):
+            XCTFail()
+            print("Route error: \(error.localizedDescription)")
+         }
       }
       IncNetworkQueue.shared.addOperation(routeOperation)
    }

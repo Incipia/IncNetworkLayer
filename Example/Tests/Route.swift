@@ -41,7 +41,7 @@ struct RouteItem: IncNetworkParsedItem, IncNetworkJSONInitable {
 
 typealias RouteResponseMapper = IncNetworkJSONMapper<RouteItem>
 
-final class RouteOperation: IncNetworkRequestOperation<RouteResponseMapper> {
+final class RouteOperation: IncNetworkRequestOperation<RouteResponseMapper, IncNetworkNilMapper> {
    public init(start: String, end: String) {
       let request = RouteRequest(start: start, end: end)
       super.init(request: request)
@@ -69,7 +69,7 @@ final class RouteRequest: IncNetworkJSONRequest {
    
 }
 
-final class RouteParameterOperation: IncNetworkRequestOperation<RouteResponseMapper> {
+final class RouteParameterOperation: IncNetworkRequestOperation<RouteResponseMapper, IncNetworkNilMapper> {
    public init(parameter: RouteParameter) {
       let request = RouteParameterRequest(parameter: parameter)
       super.init(request: request)
@@ -81,7 +81,7 @@ struct RouteParameterRequest: IncNetworkJSONParameterRequest {
    var endpoint: String { return "/route-json" }
 }
 
-final class RouteObjectOperation: IncNetworkRequestOperation<RouteResponseMapper> {
+final class RouteObjectOperation: IncNetworkRequestOperation<RouteResponseMapper, IncNetworkNilMapper> {
    public init(parameter: RouteParameter) {
       let request = RouteObjectRequest(parameter: parameter)
       super.init(request: request)

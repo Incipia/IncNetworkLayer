@@ -29,6 +29,7 @@
 		E950433C1E5F885C00AB4D20 /* IncNetworkParameterItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E950433B1E5F885C00AB4D20 /* IncNetworkParameterItem.swift */; };
 		E950433E1E5F8B4D00AB4D20 /* IncNetworkJSONParameterRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E950433D1E5F8B4D00AB4D20 /* IncNetworkJSONParameterRequest.swift */; };
 		E95043401E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E950433F1E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift */; };
+		E957FF131EB8008E00503C36 /* IncNetworkNilMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E957FF121EB8008E00503C36 /* IncNetworkNilMapper.swift */; };
 		E9AE549C1E57BD1B0069C47D /* IncNetworkObjectMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AE549B1E57BD1B0069C47D /* IncNetworkObjectMapper.swift */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +80,7 @@
 		E950433B1E5F885C00AB4D20 /* IncNetworkParameterItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkParameterItem.swift; sourceTree = "<group>"; };
 		E950433D1E5F8B4D00AB4D20 /* IncNetworkJSONParameterRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkJSONParameterRequest.swift; sourceTree = "<group>"; };
 		E950433F1E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkDataParameterRequest.swift; sourceTree = "<group>"; };
+		E957FF121EB8008E00503C36 /* IncNetworkNilMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkNilMapper.swift; sourceTree = "<group>"; };
 		E9AE549B1E57BD1B0069C47D /* IncNetworkObjectMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkObjectMapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -207,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				E947949F1E55272200DBD135 /* IncNetworkMapper.swift */,
+				E957FF121EB8008E00503C36 /* IncNetworkNilMapper.swift */,
 				E947949E1E55272200DBD135 /* IncNetworkArrayMapper.swift */,
 				E9AE549B1E57BD1B0069C47D /* IncNetworkObjectMapper.swift */,
 				E95043331E5E687300AB4D20 /* IncNetworkDataMapper.swift */,
@@ -361,6 +364,7 @@
 				E947949B1E5526D600DBD135 /* IncNetworkRequestService.swift in Sources */,
 				E95043381E5E6A9F00AB4D20 /* IncNetworkJSONMapper.swift in Sources */,
 				73C68F8C9002168C8115C77DD15797EF /* IncNetworkLayer-dummy.m in Sources */,
+				E957FF131EB8008E00503C36 /* IncNetworkNilMapper.swift in Sources */,
 				E94794A11E55272200DBD135 /* IncNetworkMapper.swift in Sources */,
 				E94794AE1E55279600DBD135 /* IncNetworkParsedItem.swift in Sources */,
 				E947949A1E5526D600DBD135 /* IncNetworkRequestConfiguration.swift in Sources */,
