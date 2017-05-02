@@ -35,15 +35,21 @@ open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapp
    
    private func _handleFailure(_ error: Error, data: Data?) {
       defer { finish() }
-      do {
-         if let error = error as? IncNetworkRequestServiceError {
-            switch error {
-            case .decodedData(let response):
-               if let item = try ErrorMapper.process(response) {
-                  completion?(.error(item, error))
-               }
-            default: completion?(.failure(error))
+      let response: Any? = {
+         guard let error = error as? IncNetworkRequestServiceError else { return nil }
+         switch error {
+         case .request(_, let dataError), .httpResponse(_, let dataError):
+            switch dataError {
+            case .decodedData(let response): return response
+            default: return nil
             }
+         case .decodedData(let response): return response
+         default: return nil
+         }
+      }()
+      do {
+         if let item = try ErrorMapper.process(response) {
+            completion?(.error(item, error))
          } else {
             completion?(.failure(error))
          }

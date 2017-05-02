@@ -3,8 +3,8 @@ import Foundation
 public let DidPerformUnauthorizedOperation = "DidPerformUnauthorizedOperation"
 
 public indirect enum IncNetworkRequestServiceError: Error {
-   case request(error: Error)
-   case httpResponse(code: Int)
+   case request(error: Error, dataError: IncNetworkRequestServiceError)
+   case httpResponse(code: Int, dataError: IncNetworkRequestServiceError)
    case invalidData(error: Error)
    case decodedData(decoded: Any?)
 }
@@ -49,14 +49,14 @@ public class IncNetworkRequestService {
          }()
 
          switch result {
-         case .requestError(let error): failure?(IncNetworkRequestServiceError.request(error: error), data)
+         case .requestError(let error): failure?(IncNetworkRequestServiceError.request(error: error, dataError: dataError), data)
          case .httpFailure(let statusCode):
             if statusCode == 401 {
                // Operation not authorized
                NotificationCenter.default.post(name: NSNotification.Name(rawValue: DidPerformUnauthorizedOperation), object: nil)
             }
-            failure?(IncNetworkRequestServiceError.httpResponse(code: statusCode), data)
-         case .unexpectedStatus(let statusCode): failure?(IncNetworkRequestServiceError.httpResponse(code: statusCode), data)
+            failure?(IncNetworkRequestServiceError.httpResponse(code: statusCode, dataError: dataError), data)
+         case .unexpectedStatus(let statusCode): failure?(IncNetworkRequestServiceError.httpResponse(code: statusCode, dataError: dataError), data)
          default: failure?(dataError, data)
          }
       })
