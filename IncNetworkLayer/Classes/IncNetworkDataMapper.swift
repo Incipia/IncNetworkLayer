@@ -8,14 +8,25 @@
 
 import Foundation
 
-public final class IncNetworkDataMapper<A: IncNetworkDataInitable>: IncNetworkMapper {
+fileprivate class _IncNetworkDataMapper<Item: IncNetworkDataInitable>: IncNetworkMapper {
    
-   public static func process(_ obj: Any?) throws -> A? {
+   public class func process(_ obj: Any?) throws -> Item? {
       guard let obj = obj else { return nil }
       guard let data = obj as? Data else { throw IncNetworkMapperError.invalid }
       
-      guard let item = try A(data: data) else { throw IncNetworkMapperError.itemInitFailed }
+      guard let item = try Item(data: data) else { throw IncNetworkMapperError.itemInitFailed }
 
       return item
    }
 }
+
+public final class IncNetworkDataMapper<Item: IncNetworkDataInitable>: _IncNetworkDataMapper<Item> {
+   // MARK: - IncNetworkMapper Protocol
+   override public class func process(_ obj: Any?) throws -> Item? {
+      guard let item = try super.process(obj) else { throw IncNetworkMapperError.nulItem }
+      
+      return item
+   }
+}
+
+public final class IncNetworkOptionalDataMapper<Item: IncNetworkDataInitable>: _IncNetworkDataMapper<Item> {}

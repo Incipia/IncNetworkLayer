@@ -7,6 +7,7 @@ public protocol IncNetworkMapper {
 
 public enum IncNetworkMapperError: Error {
    case invalid
+   case nulItem
    case itemInitFailed
    case invalidAttribute(name: String)
 }

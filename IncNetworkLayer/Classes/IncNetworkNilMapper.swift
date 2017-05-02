@@ -10,7 +10,5 @@ import Foundation
 
 public final class IncNetworkNilMapper: IncNetworkMapper {
    // MARK: - IncNetworkMapper Protocol
-   public static func process(_ obj: Any?) throws -> Any? {
-      return nil
-   }
+   public static func process(_ obj: Any?) throws -> Any? { return nil }
 }
