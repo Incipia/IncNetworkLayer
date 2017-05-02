@@ -21,6 +21,7 @@ extension IncNetworkJSONParameterRequest {
 
 open class IncNetworkJSONRequestObject<Parameter: IncNetworkJSONRepresentable>: IncNetworkJSONParameterRequest {
    open var endpoint: String { return "/" }
+   open var headers: [String : String]? { return defaultJSONHeaders() }
    public let parameter: Parameter?
    
    public init(parameter: Parameter?) {
