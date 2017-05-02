@@ -9,8 +9,8 @@
 import Foundation
 
 public protocol IncNetworkDataParameterRequest: IncNetworkRequest {
-   associatedtype P: IncNetworkDataRepresentable
-   var parameter: P? { get }
+   associatedtype Parameter: IncNetworkDataRepresentable
+   var parameter: Parameter? { get }
 }
 
 extension IncNetworkDataParameterRequest {
@@ -19,8 +19,8 @@ extension IncNetworkDataParameterRequest {
    }
 }
 
-open class IncNetworkDataRequestObject<P: IncNetworkDataRepresentable>: IncNetworkDataParameterRequest {
+open class IncNetworkDataRequestObject<Parameter: IncNetworkDataRepresentable>: IncNetworkDataParameterRequest {
    public var endpoint: String = ""
 
-   public let parameter: P? = nil
+   public let parameter: Parameter? = nil
 }

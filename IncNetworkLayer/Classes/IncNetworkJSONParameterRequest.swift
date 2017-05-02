@@ -9,8 +9,8 @@
 import Foundation
 
 public protocol IncNetworkJSONParameterRequest: IncNetworkJSONRequest {
-   associatedtype P: IncNetworkJSONRepresentable
-   var parameter: P? { get }
+   associatedtype Parameter: IncNetworkJSONRepresentable
+   var parameter: Parameter? { get }
 }
 
 extension IncNetworkJSONParameterRequest {
@@ -19,11 +19,11 @@ extension IncNetworkJSONParameterRequest {
    }
 }
 
-open class IncNetworkJSONRequestObject<P: IncNetworkJSONRepresentable>: IncNetworkJSONParameterRequest {
+open class IncNetworkJSONRequestObject<Parameter: IncNetworkJSONRepresentable>: IncNetworkJSONParameterRequest {
    open var endpoint: String { return "/" }
-   public let parameter: P?
+   public let parameter: Parameter?
    
-   public init(parameter: P?) {
+   public init(parameter: Parameter?) {
       self.parameter = parameter
    }
 }
