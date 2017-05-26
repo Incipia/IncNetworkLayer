@@ -19,7 +19,7 @@ fileprivate class _IncNetworkArrayMapper<Mapper: IncNetworkMapper>: IncNetworkMa
 public final class IncNetworkArrayMapper<Mapper: IncNetworkMapper>: _IncNetworkArrayMapper<Mapper> {
    // MARK: - IncNetworkMapper Protocol
    override public class func process(_ obj: Any?) throws -> [Mapper.Item]? {
-      guard let item = try super.process(obj) else { throw IncNetworkMapperError.nulItem }
+      guard let item = try super.process(obj) else { throw IncNetworkMapperError.nullItem }
       
       return item
    }
