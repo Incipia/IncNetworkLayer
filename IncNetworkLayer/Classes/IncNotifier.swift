@@ -46,7 +46,7 @@ public protocol IncNotifier: Equatable {
    static func remove(observer: Any, notification: Notification, object: Any?)
 }
 
-public extension IncNotifier where Self: AnyObject {
+public extension IncNotifier {
    // MARK: - Public
    func post(notification: Notification) {
       Self.post(notification: notification, object: self)
