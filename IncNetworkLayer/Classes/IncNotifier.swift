@@ -66,10 +66,6 @@ public extension IncNotifier where Self: AnyObject {
 }
 
 public protocol IncNotifierObserver: class {
-   // MARK: - Public Properties
-   var notifierBlocks: [Notification.Name : [((Notification?, AnyObject?) -> Bool)]] { get set }
-   var receiveSelector: Selector { get }
-   
    // MARK: - Public
    func startObserving<T: IncNotificationBaseType>(notification: T)
    func stopObserving<T: IncNotificationBaseType>(notification: T)
@@ -78,18 +74,44 @@ public protocol IncNotifierObserver: class {
    func observe<T: IncNotificationBaseType>(notification: T)
 }
 
-public extension IncNotifierObserver where Self: NSObject {
+public protocol IncNotifierProxyObserver: IncNotifierObserver {
+   // MARK: - Public Properties
+   var notifierBlocks: [Notification.Name : [((Notification?, AnyObject?) -> Bool)]] { get set }
+   var observerProxy: IncNotifierObserverProxy { get }
+
+   // MARK: - Internal
+   func _receive(notification: Notification)
+}
+
+public final class IncNotifierObserverProxy: NSObject {
+   // MARK: - Private Properties
+   private unowned let _observer: IncNotifierProxyObserver
+   
+   // MARK: - Init
+   public init(observer: IncNotifierProxyObserver) {
+      self._observer = observer
+      
+      super.init()
+   }
+
+   // MARK: - Public
+   @objc func receive(notification: Notification) {
+      _observer._receive(notification: notification)
+   }
+}
+
+public extension IncNotifierProxyObserver {
    // MARK: - Public
    func startObserving<T: IncNotificationBaseType>(notification: T) {
       let name = notification.name
       var blocks = notifierBlocks[name] ?? []
-      blocks.append({ rawNotification, match in
+      blocks.append({ [unowned self] rawNotification, match in
          if let rawNotification = rawNotification,
             let wrappedNotification = T(name: rawNotification.name, userInfo: rawNotification.userInfo) {
             self.observe(notification: wrappedNotification)
             return true
          } else if rawNotification == nil, match == nil {
-            NotificationCenter.default.removeObserver(self, name: notification.name, object: nil)
+            NotificationCenter.default.removeObserver(self.observerProxy, name: notification.name, object: nil)
             return true
          } else {
             return false
@@ -97,23 +119,24 @@ public extension IncNotifierObserver where Self: NSObject {
       })
       notifierBlocks[name] = blocks
       
-      NotificationCenter.default.addObserver(self, selector: receiveSelector, name: notification.name, object: nil)
+      let proxySelector = #selector(IncNotifierObserverProxy.receive(notification:))
+      NotificationCenter.default.addObserver(observerProxy, selector: proxySelector, name: notification.name, object: nil)
    }
 
    func startObserving<T: IncNotificationBaseType, U: IncNotifier>(notification: T, object: U) where U: AnyObject, U.Notification == T {
       let name = notification.name
       var blocks = notifierBlocks[name] ?? []
-      blocks.append({ [weak object] rawNotification, match in
+      blocks.append({ [weak object, unowned self] rawNotification, match in
          if let rawNotification = rawNotification,
             object != nil && (object as AnyObject) === (rawNotification.object as AnyObject),
             let wrappedNotification = T(name: rawNotification.name, userInfo: rawNotification.userInfo) {
             self.observe(notification: wrappedNotification)
             return true
          } else if let match = match, match === object {
-            U.remove(observer: self, notification: notification, object: match)
+            U.remove(observer: self.observerProxy, notification: notification, object: match)
             return true
          } else if rawNotification == nil, match == nil {
-            NotificationCenter.default.removeObserver(self, name: notification.name, object: nil)
+            NotificationCenter.default.removeObserver(self.observerProxy, name: notification.name, object: nil)
             return true
          } else {
             return false
@@ -121,7 +144,8 @@ public extension IncNotifierObserver where Self: NSObject {
       })
       notifierBlocks[name] = blocks
       
-      U.add(observer: self, selector: receiveSelector, notification: notification, object: object)
+      let proxySelector = #selector(IncNotifierObserverProxy.receive(notification:))
+      U.add(observer: observerProxy, selector: proxySelector, notification: notification, object: object)
    }
    
    func stopObserving<T: IncNotificationBaseType>(notification: T) {
