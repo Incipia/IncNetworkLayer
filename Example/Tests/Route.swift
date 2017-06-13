@@ -92,3 +92,31 @@ final class RouteObjectRequest: IncNetworkJSONRequestObject<RouteParameter> {
    override var endpoint: String { return "/route-json" }
 }
 
+final class RouteActivityObserver: NSObject, IncNotifierObserver {
+   var notifierBlocks: [Notification.Name : [((Notification?, AnyObject?) -> Bool)]] = [:]
+   var receiveSelector: Selector { return #selector(RouteActivityObserver.receive(notification:)) }
+   
+   var startedCount: Int = 0
+   var stoppedCount: Int = 0
+   
+   @objc func receive(notification: Notification) {
+      _receive(notification: notification)
+   }
+   
+   override init() {
+      super.init()
+      startObserving(notification: IncNetworkQueue.Notification.startedNetworkActivity, object: IncNetworkQueue.shared)
+   }
+   
+   func observe<T : IncNotificationBaseType>(notification: T) {
+      guard let notification = notification as? IncNetworkQueue.Notification else { fatalError() }
+      switch notification {
+      case .startedNetworkActivity: startedCount += 1
+      case .stoppedNetworkActivity: stoppedCount += 1
+      }
+   }
+   
+   deinit {
+      stopObserving(notification: IncNetworkQueue.Notification.startedNetworkActivity, object: IncNetworkQueue.shared)
+   }
+}

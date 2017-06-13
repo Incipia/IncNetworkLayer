@@ -25,7 +25,11 @@ public extension IncNotificationType where RawValue == String {
    var userInfo: [AnyHashable : Any]? { return nil }
    
    init?(name: Notification.Name, userInfo: [AnyHashable : Any]? = nil) {
-      self.init(rawValue: name.rawValue)
+      let rawName = name.rawValue
+      let prefix = "\(Self.namePrefix)."
+      guard let range = rawName.range(of: prefix), !range.isEmpty else { return nil }
+      let rawValue = rawName.replacingCharacters(in: range, with: "")
+      self.init(rawValue: rawValue)
    }
 }
 
@@ -63,27 +67,33 @@ public extension IncNotifier where Self: AnyObject {
 }
 
 public protocol IncNotifierObserver: class {
-   var notifierBlocks: [Notification.Name : [((Notification?, (selector: Selector, object: AnyObject?)?) -> Bool)]] { get set }
+   var notifierBlocks: [Notification.Name : [((Notification?, AnyObject?) -> Bool)]] { get set }
    var receiveSelector: Selector { get }
    
-   func startObserving<T: IncNotificationBaseType, U: IncNotifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T
-   func stopObserving<T: IncNotificationBaseType, U: IncNotifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T
+   func startObserving<T: IncNotificationBaseType, U: IncNotifier>(notification: T, object: U?) where U: AnyObject, U.Notification == T
+   func stopObserving<T: IncNotificationBaseType, U: IncNotifier>(notification: T, object: U?) where U: AnyObject, U.Notification == T
+   func observe<T: IncNotificationBaseType>(notification: T)
 }
 
 public extension IncNotifierObserver where Self: NSObject {
-   func startObserving<T: IncNotificationBaseType, U: IncNotifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T {
+   func startObserving<T: IncNotificationBaseType, U: IncNotifier>(notification: T, object: U? = nil) where U: AnyObject, U.Notification == T {
       let name = notification.name
       var blocks = notifierBlocks[name] ?? []
-      let matches = blocks.filter { return !$0(nil, (selector: selector, object: object)) }
+      let matches = blocks.filter { return !$0(nil, object) }
       guard matches.isEmpty else { return }
-      blocks.append({ rawNotification, match in
+      blocks.append({ [weak object] rawNotification, match in
          if let rawNotification = rawNotification,
             object == nil || (object as AnyObject) === (rawNotification.object as AnyObject),
             let wrappedNotification = T(name: rawNotification.name, userInfo: rawNotification.userInfo) {
-            self.perform(selector, with: wrappedNotification)
+            self.observe(notification: wrappedNotification)
             return true
-         } else if let match = match {
-            return match.selector == selector && (match.object == nil || match.object === object)
+         } else if let match = match, match.object == nil || match === object {
+            if let object = object {
+               U.remove(observer: self, notification: notification, object: object)
+            } else {
+               NotificationCenter.default.removeObserver(self, name: notification.name, object: nil)
+            }
+            return true
          } else {
             return false
          }
@@ -92,13 +102,15 @@ public extension IncNotifierObserver where Self: NSObject {
       
       if let object = object {
          U.add(observer: self, selector: receiveSelector, notification: notification, object: object)
+      } else {
+         NotificationCenter.default.addObserver(self, selector: receiveSelector, name: notification.name, object: nil)
       }
    }
    
-   func stopObserving<T: IncNotificationBaseType, U: IncNotifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T {
+   func stopObserving<T: IncNotificationBaseType, U: IncNotifier>(notification: T, object: U? = nil) where U: AnyObject, U.Notification == T {
       let name = notification.name
       guard let blocks = notifierBlocks[name] else { return }
-      let filteredBlocks = blocks.filter { return !$0(nil, (selector: selector, object: object)) }
+      let filteredBlocks = blocks.filter { return !$0(nil, object) }
       notifierBlocks[name] = filteredBlocks.isEmpty ? nil : filteredBlocks
    }
    

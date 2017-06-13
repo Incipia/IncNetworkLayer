@@ -80,4 +80,15 @@ class RouteTests: XCTestCase {
       IncNetworkQueue.shared.addOperation(routeOperation)
    }
 
+   func testNotification() {
+      let observer = RouteActivityObserver()
+      XCTAssertEqual(observer.startedCount, 0)
+      XCTAssertEqual(observer.stoppedCount, 0)
+      let routeOperation = RouteOperation(start: "here", end: "Shell Beach")
+      routeOperation.completion = { _ in
+         XCTAssertEqual(observer.startedCount, 1)
+         XCTAssertEqual(observer.stoppedCount, 0)
+      }
+      IncNetworkQueue.shared.addOperation(routeOperation)
+   }
 }
