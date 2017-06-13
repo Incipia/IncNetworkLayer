@@ -9,21 +9,26 @@
 import Foundation
 
 public protocol IncNotificationBaseType {
+   // MARK: - Public Properties
    var name: Notification.Name { get }
    var userInfo: [AnyHashable : Any]? { get }
    
+   // MARK: - Init
    init?(name: Notification.Name, userInfo: [AnyHashable : Any]?)
 }
 
 public protocol IncNotificationType: IncNotificationBaseType, RawRepresentable {
+   // MARK: - Public Properties
    static var namePrefix: String { get }
 }
 
 public extension IncNotificationType where RawValue == String {
+   // MARK: - Public Properties
    static var namePrefix: String { return "" }
    var name: Notification.Name { return Notification.Name(rawValue: "\(Self.namePrefix).\(rawValue)") }
    var userInfo: [AnyHashable : Any]? { return nil }
    
+   // MARK: - Init
    init?(name: Notification.Name, userInfo: [AnyHashable : Any]? = nil) {
       let rawName = name.rawValue
       let prefix = "\(Self.namePrefix)."
@@ -36,40 +41,36 @@ public extension IncNotificationType where RawValue == String {
 public protocol IncNotifier: Equatable {
    associatedtype Notification: IncNotificationType
    
+   // MARK: - Public
    static func add(observer: Any, selector: Selector, notification: Notification, object: Any?)
    static func remove(observer: Any, notification: Notification, object: Any?)
 }
 
 public extension IncNotifier where Self: AnyObject {
-   // MARK: - Instance Methods
-   
-   // Post
+   // MARK: - Public
    func post(notification: Notification) {
       Self.post(notification: notification, object: self)
    }
    
-   // MARK: - Static Functions
-   
-   // Post
    static func post(notification: Notification, object: Any? = nil) {
       NotificationCenter.default.post(name: notification.name, object: object, userInfo: notification.userInfo)
    }
-   
-   // Add
+
    static func add(observer: Any, selector: Selector, notification: Notification, object: Any? = nil) {
       NotificationCenter.default.addObserver(observer, selector: selector, name: notification.name, object: object)
    }
    
-   // Remove
    static func remove(observer: Any, notification: Notification, object: Any? = nil) {
       NotificationCenter.default.removeObserver(observer, name: notification.name, object: object)
    }
 }
 
 public protocol IncNotifierObserver: class {
+   // MARK: - Public Properties
    var notifierBlocks: [Notification.Name : [((Notification?, AnyObject?) -> Bool)]] { get set }
    var receiveSelector: Selector { get }
    
+   // MARK: - Public
    func startObserving<T: IncNotificationBaseType>(notification: T)
    func stopObserving<T: IncNotificationBaseType>(notification: T)
    func startObserving<T: IncNotificationBaseType, U: IncNotifier>(notification: T, object: U) where U: AnyObject, U.Notification == T
@@ -78,6 +79,7 @@ public protocol IncNotifierObserver: class {
 }
 
 public extension IncNotifierObserver where Self: NSObject {
+   // MARK: - Public
    func startObserving<T: IncNotificationBaseType>(notification: T) {
       let name = notification.name
       var blocks = notifierBlocks[name] ?? []
@@ -136,6 +138,7 @@ public extension IncNotifierObserver where Self: NSObject {
       notifierBlocks[name] = filteredBlocks.isEmpty ? nil : filteredBlocks
    }
    
+   // MARK: - Internal
    func _receive(notification: Notification) {
       let name = notification.name
       let observationCount = notifierBlocks[name]?.filter { return $0(notification, nil) }.count ?? 0
