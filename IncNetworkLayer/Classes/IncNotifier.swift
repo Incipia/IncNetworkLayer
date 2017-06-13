@@ -8,18 +8,18 @@
 
 import Foundation
 
-public protocol NotificationBaseType {
+public protocol IncNotificationBaseType {
    var name: Notification.Name { get }
    var userInfo: [AnyHashable : Any]? { get }
    
    init?(name: Notification.Name, userInfo: [AnyHashable : Any]?)
 }
 
-public protocol NotificationType: NotificationBaseType, RawRepresentable {
+public protocol IncNotificationType: IncNotificationBaseType, RawRepresentable {
    static var namePrefix: String { get }
 }
 
-public extension NotificationType where RawValue == String {
+public extension IncNotificationType where RawValue == String {
    static var namePrefix: String { return "" }
    var name: Notification.Name { return Notification.Name(rawValue: "\(Self.namePrefix).\(rawValue)") }
    var userInfo: [AnyHashable : Any]? { return nil }
@@ -29,14 +29,14 @@ public extension NotificationType where RawValue == String {
    }
 }
 
-public protocol Notifier: Equatable {
-   associatedtype Notification: NotificationType
+public protocol IncNotifier: Equatable {
+   associatedtype Notification: IncNotificationType
    
    static func add(observer: Any, selector: Selector, notification: Notification, object: Any?)
    static func remove(observer: Any, notification: Notification, object: Any?)
 }
 
-public extension Notifier where Self: AnyObject {
+public extension IncNotifier where Self: AnyObject {
    // MARK: - Instance Methods
    
    // Post
@@ -62,17 +62,16 @@ public extension Notifier where Self: AnyObject {
    }
 }
 
-public protocol NotifierObserver: class {
+public protocol IncNotifierObserver: class {
    var notifierBlocks: [Notification.Name : [((Notification?, (selector: Selector, object: AnyObject?)?) -> Bool)]] { get set }
    var receiveSelector: Selector { get }
    
-   func startObserving<T: NotificationBaseType, U: Notifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T
-   func stopObserving<T: NotificationBaseType, U: Notifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T
-   func observe(notification: Notification)
+   func startObserving<T: IncNotificationBaseType, U: IncNotifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T
+   func stopObserving<T: IncNotificationBaseType, U: IncNotifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T
 }
 
-public extension NotifierObserver where Self: NSObject {
-   func startObserving<T: NotificationBaseType, U: Notifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T {
+public extension IncNotifierObserver where Self: NSObject {
+   func startObserving<T: IncNotificationBaseType, U: IncNotifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T {
       let name = notification.name
       var blocks = notifierBlocks[name] ?? []
       let matches = blocks.filter { return !$0(nil, (selector: selector, object: object)) }
@@ -96,14 +95,14 @@ public extension NotifierObserver where Self: NSObject {
       }
    }
    
-   func stopObserving<T: NotificationBaseType, U: Notifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T {
+   func stopObserving<T: IncNotificationBaseType, U: IncNotifier>(selector: Selector, notification: T, object: U?) where U: AnyObject, U.Notification == T {
       let name = notification.name
       guard let blocks = notifierBlocks[name] else { return }
       let filteredBlocks = blocks.filter { return !$0(nil, (selector: selector, object: object)) }
       notifierBlocks[name] = filteredBlocks.isEmpty ? nil : filteredBlocks
    }
    
-   func receive(notification: Notification) {
+   func _receive(notification: Notification) {
       let name = notification.name
       let observationCount = notifierBlocks[name]?.filter { return $0(notification, nil) }.count ?? 0
       _logObservationCount(observationCount, for: notification)
