@@ -85,10 +85,13 @@ class RouteTests: XCTestCase {
       XCTAssertEqual(observer.startedCount, 0)
       XCTAssertEqual(observer.stoppedCount, 0)
       let routeOperation = RouteOperation(start: "here", end: "Shell Beach")
+      
       routeOperation.completion = { _ in
          XCTAssertEqual(observer.startedCount, 1)
          XCTAssertEqual(observer.stoppedCount, 0)
       }
+      expectation(forNotification: IncNetworkQueue.Notification.stoppedNetworkActivity.name.rawValue, object: IncNetworkQueue.shared)
       IncNetworkQueue.shared.addOperation(routeOperation)
+      waitForExpectations(timeout: 0.5)
    }
 }

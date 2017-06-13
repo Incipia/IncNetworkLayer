@@ -41,15 +41,27 @@ public extension IncNotificationType where RawValue == String {
 public protocol IncNotifier: Equatable {
    associatedtype Notification: IncNotificationType
    
+   // MARK: - Public Properties
+   var notificationQueue: DispatchQueue? { get }
+   
    // MARK: - Public
    static func add(observer: Any, selector: Selector, notification: Notification, object: Any?)
    static func remove(observer: Any, notification: Notification, object: Any?)
 }
 
 public extension IncNotifier {
+   // MARK: - Public Properties
+   var notificationQueue: DispatchQueue? { return nil }
+   
    // MARK: - Public
    func post(notification: Notification) {
-      Self.post(notification: notification, object: self)
+      if let queue = notificationQueue {
+         queue.async {
+            Self.post(notification: notification, object: self)
+         }
+      } else {
+         Self.post(notification: notification, object: self)
+      }
    }
    
    static func post(notification: Notification, object: Any? = nil) {
@@ -105,13 +117,14 @@ public extension IncNotifierProxyObserver {
    func startObserving<T: IncNotificationBaseType>(notification: T) {
       let name = notification.name
       var blocks = notifierBlocks[name] ?? []
+      let observerProxy = self.observerProxy
       blocks.append({ [unowned self] rawNotification, match in
          if let rawNotification = rawNotification,
             let wrappedNotification = T(name: rawNotification.name, userInfo: rawNotification.userInfo) {
             self.observe(notification: wrappedNotification)
             return true
          } else if rawNotification == nil, match == nil {
-            NotificationCenter.default.removeObserver(self.observerProxy, name: notification.name, object: nil)
+            NotificationCenter.default.removeObserver(observerProxy, name: notification.name, object: nil)
             return true
          } else {
             return false
@@ -126,6 +139,7 @@ public extension IncNotifierProxyObserver {
    func startObserving<T: IncNotificationBaseType, U: IncNotifier>(notification: T, object: U) where U: AnyObject, U.Notification == T {
       let name = notification.name
       var blocks = notifierBlocks[name] ?? []
+      let observerProxy = self.observerProxy
       blocks.append({ [weak object, unowned self] rawNotification, match in
          if let rawNotification = rawNotification,
             object != nil && (object as AnyObject) === (rawNotification.object as AnyObject),
@@ -133,10 +147,10 @@ public extension IncNotifierProxyObserver {
             self.observe(notification: wrappedNotification)
             return true
          } else if let match = match, match === object {
-            U.remove(observer: self.observerProxy, notification: notification, object: match)
+            U.remove(observer: observerProxy, notification: notification, object: match)
             return true
          } else if rawNotification == nil, match == nil {
-            NotificationCenter.default.removeObserver(self.observerProxy, name: notification.name, object: nil)
+            NotificationCenter.default.removeObserver(observerProxy, name: notification.name, object: nil)
             return true
          } else {
             return false

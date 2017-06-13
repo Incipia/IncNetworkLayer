@@ -18,6 +18,7 @@ public class IncNetworkQueue: NSObject, IncNotifier {
    // MARK: - Public Properties
    let queue = OperationQueue()
    public var managesNetworkActivityIndicator: Bool = false
+   public var notificationQueue: DispatchQueue?
    
    // MARK: - Init
    public override init() {
