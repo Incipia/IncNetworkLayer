@@ -92,11 +92,8 @@ final class RouteObjectRequest: IncNetworkJSONRequestObject<RouteParameter> {
    override var endpoint: String { return "/route-json" }
 }
 
-final class RouteActivityObserver: NSObject, IncNotifierProxyObserver {
-   var notifierBlocks: [Notification.Name : [((Notification?, AnyObject?) -> Bool)]] = [:]
-   lazy var observerProxy: IncNotifierObserverProxy = {
-      return IncNotifierObserverProxy(observer: self)
-   }()
+final class RouteActivityObserver: NSObject, IncNotifierObserver {
+   var notifierObservers: [Notification.Name : [(object: AnyObject?, observer: NSObjectProtocol)]] = [:]
    
    var startedCount: Int = 0
    var stoppedCount: Int = 0
@@ -115,6 +112,6 @@ final class RouteActivityObserver: NSObject, IncNotifierProxyObserver {
    }
    
    deinit {
-      stopObserving(notification: IncNetworkQueue.Notification.startedNetworkActivity, object: IncNetworkQueue.shared)
+      stopObserving()
    }
 }

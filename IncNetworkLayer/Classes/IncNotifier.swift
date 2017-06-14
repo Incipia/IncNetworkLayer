@@ -77,7 +77,7 @@ public extension IncNotifier {
    }
 }
 
-public protocol IncNotifierObserver: class {
+public protocol IncNotifierBaseObserver: class {
    // MARK: - Public
    func startObserving<T: IncNotificationBaseType>(notification: T)
    func stopObserving<T: IncNotificationBaseType>(notification: T)
@@ -86,108 +86,67 @@ public protocol IncNotifierObserver: class {
    func observe<T: IncNotificationBaseType>(notification: T)
 }
 
-public protocol IncNotifierProxyObserver: IncNotifierObserver {
+public protocol IncNotifierObserver: IncNotifierBaseObserver {
    // MARK: - Public Properties
-   var notifierBlocks: [Notification.Name : [((Notification?, AnyObject?) -> Bool)]] { get set }
-   var observerProxy: IncNotifierObserverProxy { get }
-
-   // MARK: - Internal
-   func _receive(notification: Notification)
-}
-
-public final class IncNotifierObserverProxy: NSObject {
-   // MARK: - Private Properties
-   private unowned let _observer: IncNotifierProxyObserver
+   var notifierObservers: [Notification.Name : [(object: AnyObject?, observer: NSObjectProtocol)]] { get set }
+   var observationQueue: OperationQueue? { get }
    
-   // MARK: - Init
-   public init(observer: IncNotifierProxyObserver) {
-      self._observer = observer
-      
-      super.init()
-   }
-
    // MARK: - Public
-   @objc func receive(notification: Notification) {
-      _observer._receive(notification: notification)
-   }
+   func stopObserving()
 }
 
-public extension IncNotifierProxyObserver {
+public extension IncNotifierObserver {
+   // MARK: - Public Properties
+   var observationQueue: OperationQueue? { return nil }
+   
    // MARK: - Public
    func startObserving<T: IncNotificationBaseType>(notification: T) {
       let name = notification.name
-      var blocks = notifierBlocks[name] ?? []
-      let observerProxy = self.observerProxy
-      blocks.append({ [unowned self] rawNotification, match in
-         if let rawNotification = rawNotification,
-            let wrappedNotification = T(name: rawNotification.name, userInfo: rawNotification.userInfo) {
-            self.observe(notification: wrappedNotification)
-            return true
-         } else if rawNotification == nil, match == nil {
-            NotificationCenter.default.removeObserver(observerProxy, name: notification.name, object: nil)
-            return true
-         } else {
-            return false
-         }
-      })
-      notifierBlocks[name] = blocks
-      
-      let proxySelector = #selector(IncNotifierObserverProxy.receive(notification:))
-      NotificationCenter.default.addObserver(observerProxy, selector: proxySelector, name: notification.name, object: nil)
+      var observers = notifierObservers[name] ?? []
+      let existingObservers = observers.filter { $0.object == nil }
+      guard existingObservers.isEmpty else { return }
+      let observer = NotificationCenter.default.addObserver(forName: name, object: nil, queue: observationQueue) { [weak self] rawNotification in
+         guard let wrappedNotification = T(name: rawNotification.name, userInfo: rawNotification.userInfo) else { return }
+         self?.observe(notification: wrappedNotification)
+      }
+      observers.append((object: nil, observer: observer))
    }
 
    func startObserving<T: IncNotificationBaseType, U: IncNotifier>(notification: T, object: U) where U: AnyObject, U.Notification == T {
       let name = notification.name
-      var blocks = notifierBlocks[name] ?? []
-      let observerProxy = self.observerProxy
-      blocks.append({ [weak object, unowned self] rawNotification, match in
-         if let rawNotification = rawNotification,
-            object != nil && (object as AnyObject) === (rawNotification.object as AnyObject),
-            let wrappedNotification = T(name: rawNotification.name, userInfo: rawNotification.userInfo) {
-            self.observe(notification: wrappedNotification)
-            return true
-         } else if let match = match, match === object {
-            U.remove(observer: observerProxy, notification: notification, object: match)
-            return true
-         } else if rawNotification == nil, match == nil {
-            NotificationCenter.default.removeObserver(observerProxy, name: notification.name, object: nil)
-            return true
-         } else {
-            return false
-         }
-      })
-      notifierBlocks[name] = blocks
-      
-      let proxySelector = #selector(IncNotifierObserverProxy.receive(notification:))
-      U.add(observer: observerProxy, selector: proxySelector, notification: notification, object: object)
+      var observers = notifierObservers[name] ?? []
+      let existingObservers = observers.filter { $0.object === (object as AnyObject) }
+      guard existingObservers.isEmpty else { return }
+      let observer = NotificationCenter.default.addObserver(forName: name, object: object, queue: observationQueue) { [weak self] rawNotification in
+         guard (rawNotification.object as AnyObject) === (object as AnyObject) else { return }
+         guard let wrappedNotification = T(name: rawNotification.name, userInfo: rawNotification.userInfo) else { return }
+         self?.observe(notification: wrappedNotification)
+      }
+      observers.append((object: object, observer: observer))
    }
    
    func stopObserving<T: IncNotificationBaseType>(notification: T) {
       let name = notification.name
-      guard let blocks = notifierBlocks[name] else { return }
-      let filteredBlocks = blocks.filter { return !$0(nil, nil) }
-      notifierBlocks[name] = filteredBlocks.isEmpty ? nil : filteredBlocks
+      guard let observers = notifierObservers[name] else { return }
+      observers.forEach {
+         NotificationCenter.default.removeObserver($0.observer)
+      }
+      notifierObservers[name] = nil
    }
    
    func stopObserving<T: IncNotificationBaseType, U: IncNotifier>(notification: T, object: U) where U: AnyObject, U.Notification == T {
       let name = notification.name
-      guard let blocks = notifierBlocks[name] else { return }
-      let filteredBlocks = blocks.filter { return !$0(nil, object) }
-      notifierBlocks[name] = filteredBlocks.isEmpty ? nil : filteredBlocks
+      guard let observers = notifierObservers[name] else { return }
+      let filteredObservers = observers.filter {
+         guard $0.object === (object as AnyObject) else { return true }
+         NotificationCenter.default.removeObserver($0.observer)
+         return false
+      }
+      notifierObservers[name] = filteredObservers.isEmpty ? nil : filteredObservers
    }
    
-   // MARK: - Internal
-   func _receive(notification: Notification) {
-      let name = notification.name
-      let observationCount = notifierBlocks[name]?.filter { return $0(notification, nil) }.count ?? 0
-      _logObservationCount(observationCount, for: notification)
-   }
-   
-   func _logObservationCount(_ count: Int, for notification: Notification) {
-      #if DEBUG
-         if count == 0 {
-            print("NotifierObserver \(self) received notification \(notification) with no matching block.")
-         }
-      #endif
+   func stopObserving() {
+      notifierObservers.forEach { $0.value.forEach { NotificationCenter.default.removeObserver($0.observer) } }
+      notifierObservers = [:]
    }
 }
