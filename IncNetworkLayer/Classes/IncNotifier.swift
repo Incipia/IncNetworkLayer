@@ -89,7 +89,7 @@ public protocol IncNotifierBaseObserver: class {
 public protocol IncNotifierObserver: IncNotifierBaseObserver {
    // MARK: - Public Properties
    var notifierObservers: [Notification.Name : [(object: AnyObject?, observer: NSObjectProtocol)]] { get set }
-   var observationQueue: OperationQueue? { get }
+   var observationQueue: DispatchQueue? { get }
    
    // MARK: - Public
    func stopObserving()
@@ -97,7 +97,7 @@ public protocol IncNotifierObserver: IncNotifierBaseObserver {
 
 public extension IncNotifierObserver {
    // MARK: - Public Properties
-   var observationQueue: OperationQueue? { return nil }
+   var observationQueue: DispatchQueue? { return nil }
    
    // MARK: - Public
    func startObserving<T: IncNotificationBaseType>(notification: T) {
@@ -105,9 +105,16 @@ public extension IncNotifierObserver {
       var observers = notifierObservers[name] ?? []
       let existingObservers = observers.filter { $0.object == nil }
       guard existingObservers.isEmpty else { return }
-      let observer = NotificationCenter.default.addObserver(forName: name, object: nil, queue: observationQueue) { [weak self] rawNotification in
+      let observer = NotificationCenter.default.addObserver(forName: name, object: nil, queue: nil) { [weak self] rawNotification in
          guard let wrappedNotification = T(name: rawNotification.name, userInfo: rawNotification.userInfo) else { return }
-         self?.observe(notification: wrappedNotification)
+         guard let strongSelf = self else { return }
+         if let queue = self?.observationQueue {
+            queue.async {
+               self?.observe(notification: wrappedNotification)
+            }
+         } else {
+            self?.observe(notification: wrappedNotification)
+         }
       }
       observers.append((object: nil, observer: observer))
    }
@@ -117,7 +124,7 @@ public extension IncNotifierObserver {
       var observers = notifierObservers[name] ?? []
       let existingObservers = observers.filter { $0.object === (object as AnyObject) }
       guard existingObservers.isEmpty else { return }
-      let observer = NotificationCenter.default.addObserver(forName: name, object: object, queue: observationQueue) { [weak self] rawNotification in
+      let observer = NotificationCenter.default.addObserver(forName: name, object: object, queue: nil) { [weak self] rawNotification in
          guard (rawNotification.object as AnyObject) === (object as AnyObject) else { return }
          guard let wrappedNotification = T(name: rawNotification.name, userInfo: rawNotification.userInfo) else { return }
          self?.observe(notification: wrappedNotification)
