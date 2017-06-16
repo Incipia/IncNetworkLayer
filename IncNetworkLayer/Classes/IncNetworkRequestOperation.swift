@@ -29,8 +29,7 @@ open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapp
       super.cancel()
    }
    
-   open override func start() {
-      super.start()
+   open override func execute() {
       _service.request(_request, success: _handleSuccess, failure: _handleFailure)
    }
 
@@ -42,15 +41,12 @@ open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapp
          } else {
             _handleCompletion(.nullSuccess)
          }
-         self.finish()
       } catch {
          _handleCompletion(.failure(error))
-         self.finish()
       }
    }
    
    private func _handleFailure(_ error: Error, data: Data?) {
-      defer { finish() }
       let response: Any? = {
          guard let error = error as? IncNetworkRequestServiceError else { return nil }
          switch error {
@@ -74,13 +70,19 @@ open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapp
       }
    }
    
-   private func _handleCompletion(_ result: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) {
+   private func _handleCompletion(_ result: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>, shouldFinish: Bool = true) {
       if let queue = completionQueue, let completion = completion {
          queue.async {
             completion(result)
+            if shouldFinish {
+               self.finish()
+            }
          }
       } else {
          completion?(result)
+         if shouldFinish {
+            finish()
+         }
       }
    }
 }

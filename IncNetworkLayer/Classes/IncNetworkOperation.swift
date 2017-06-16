@@ -1,71 +1,70 @@
 import Foundation
 
 open class IncNetworkOperation: Operation {
-   
-   private var _isReady: Bool
-   open override var isReady: Bool {
-      get { return _isReady }
-      set { update(
-         { self._isReady = newValue }, key: "isReady") }
+   #if DEBUG
+   // MARK: - Public Properties
+   var showDebugOutput = true
+   #endif
+
+   // MARK: - Private Properties
+   fileprivate var _isReady = true {
+      willSet { willChangeValue(forKey: "isReady") }
+      didSet { didChangeValue(forKey: "isReady") }
+   }
+
+   fileprivate var _isExecuting = false {
+      willSet { willChangeValue(forKey: "isExecuting") }
+      didSet { didChangeValue(forKey: "isExecuting") }
    }
    
-   private var _isExecuting: Bool
-   open override var isExecuting: Bool {
-      get { return _isExecuting }
-      set { update({ self._isExecuting = newValue }, key: "isExecuting") }
+   fileprivate var _isFinished = false {
+      willSet { willChangeValue(forKey: "isFinished") }
+      didSet { didChangeValue(forKey: "isFinished") }
    }
    
-   private var _isFinished: Bool
-   open override var isFinished: Bool {
-      get { return _isFinished }
-      set { update({ self._isFinished = newValue }, key: "isFinished") }
+   fileprivate var _isCancelled = false {
+      willSet { willChangeValue(forKey: "isCancelled") }
+      didSet { didChangeValue(forKey: "isCancelled") }
    }
    
-   private var _isCancelled: Bool
-   open override var isCancelled: Bool {
-      get { return _isCancelled }
-      set { update({ self._isCancelled = newValue }, key: "isCancelled") }
-   }
+   // MARK: - Overridden
+   override open var isAsynchronous: Bool { return true }
+   override open var isExecuting: Bool { return _isExecuting }
+   override open var isFinished: Bool { return _isFinished }
    
-   private func update(_ change: (Void) -> Void, key: String) {
-      willChangeValue(forKey: key)
-      change()
-      didChangeValue(forKey: key)
-   }
-   
-   override init() {
-      _isReady = true
-      _isExecuting = false
-      _isFinished = false
-      _isCancelled = false
-      super.init()
-      name = "Network Operation"
-   }
-   
-   open override var isAsynchronous: Bool {
-      return true
-   }
-   
-   open override func start() {
-      if self.isExecuting == false {
-         self.isReady = false
-         self.isExecuting = true
-         self.isFinished = false
-         self.isCancelled = false
-         print("\(self.name!) operation started.")
+   // MARK: - Public
+   override open func start() {
+      #if DEBUG
+      if showDebugOutput {
+         print("--- START : \(type(of: self)) ---")
       }
+      #endif
+      _isExecuting = true
+      execute()
+   }
+
+   override open func cancel() {
+      #if DEBUG
+      if showDebugOutput {
+         print("--- START : \(type(of: self)) ---")
+      }
+      #endif
+      _isExecuting = false
+      _isCancelled = true
+   }
+
+   func finish() {
+      #if DEBUG
+      if showDebugOutput {
+         print("--- FINISH : \(type(of: self)) ---")
+      }
+      #endif
+      _isExecuting = false
+      _isFinished = true
    }
    
-   /// Used only by subclasses. Externally you should use `cancel`.
-   public func finish() {
-      print("\(self.name!) operation finished.")
-      self.isExecuting = false
-      self.isFinished = true
-   }
-   
-   open override func cancel() {
-      print("\(self.name!) operation cancelled.")
-      self.isExecuting = false
-      self.isCancelled = true
+   func execute() {
+      fatalError("Must override!")
    }
 }
+
