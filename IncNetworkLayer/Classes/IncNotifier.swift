@@ -24,12 +24,16 @@ public protocol IncNotificationType: IncNotificationBaseType, RawRepresentable {
 
 public extension IncNotificationType where RawValue == String {
    // MARK: - Public Properties
-   static var namePrefix: String { return "" }
+   static var namePrefix: String { return "\(type(of: self))" }
    var name: Notification.Name { return Notification.Name(rawValue: "\(Self.namePrefix).\(rawValue)") }
    var userInfo: [AnyHashable : Any]? { return nil }
    
    // MARK: - Init
-   init?(name: Notification.Name, userInfo: [AnyHashable : Any]? = nil) {
+   init?(name: Notification.Name, userInfo: [AnyHashable : Any]?) {
+      self.init(name: name)
+   }
+   
+   init?(name: Notification.Name) {
       let rawName = name.rawValue
       let prefix = "\(Self.namePrefix)."
       guard let range = rawName.range(of: prefix), !range.isEmpty else { return nil }

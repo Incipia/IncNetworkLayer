@@ -1,8 +1,22 @@
 import Foundation
 
+public protocol IncNetworkOperationDelegate: class {
+   func operationStarted(_ operation: IncNetworkOperation)
+   func operationCancelled(_ operation: IncNetworkOperation)
+   func operationFinished(_ operation: IncNetworkOperation)
+}
+
+public extension IncNetworkOperationDelegate {
+   func operationStarted(_ operation: IncNetworkOperation) {}
+   func operationCancelled(_ operation: IncNetworkOperation) {}
+   func operationFinished(_ operation: IncNetworkOperation) {}
+}
+
 open class IncNetworkOperation: Operation {
-   #if DEBUG
    // MARK: - Public Properties
+   weak var delegate: IncNetworkOperationDelegate?
+   
+   #if DEBUG
    var showDebugOutput = true
    #endif
 
@@ -27,6 +41,13 @@ open class IncNetworkOperation: Operation {
       didSet { didChangeValue(forKey: "isCancelled") }
    }
    
+   // MARK: - Init
+   override init() {
+      super.init()
+      
+      name = "\(type(of: self))"
+   }
+   
    // MARK: - Overridden
    override open var isAsynchronous: Bool { return true }
    override open var isExecuting: Bool { return _isExecuting }
@@ -36,31 +57,34 @@ open class IncNetworkOperation: Operation {
    override open func start() {
       #if DEBUG
       if showDebugOutput {
-         print("--- START : \(type(of: self)) ---")
+         print("--- START : \(name) ---")
       }
       #endif
       _isExecuting = true
       execute()
+      delegate?.operationStarted(self)
    }
 
    override open func cancel() {
       #if DEBUG
       if showDebugOutput {
-         print("--- START : \(type(of: self)) ---")
+         print("--- START : \(name) ---")
       }
       #endif
       _isExecuting = false
       _isCancelled = true
+      delegate?.operationCancelled(self)
    }
 
    func finish() {
       #if DEBUG
       if showDebugOutput {
-         print("--- FINISH : \(type(of: self)) ---")
+         print("--- FINISH : \(name) ---")
       }
       #endif
       _isExecuting = false
       _isFinished = true
+      delegate?.operationFinished(self)
    }
    
    func execute() {

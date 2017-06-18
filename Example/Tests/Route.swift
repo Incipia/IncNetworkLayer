@@ -97,18 +97,32 @@ final class RouteActivityObserver: NSObject, IncNotifierObserver {
    
    var startedCount: Int = 0
    var stoppedCount: Int = 0
+   var opStartCount: Int = 0
+   var opCancelCount: Int = 0
+   var opFinishCount: Int = 0
    
-   override init() {
-      super.init()
-      startObserving(notification: IncNetworkQueue.Notification.startedNetworkActivity, object: IncNetworkQueue.shared)
-   }
+   var onObserve: ((IncNetworkQueue.Notification) -> Void)?
    
    func observe<T : IncNotificationBaseType>(notification: T) {
       guard let notification = notification as? IncNetworkQueue.Notification else { fatalError() }
       switch notification {
-      case .startedNetworkActivity: startedCount += 1
-      case .stoppedNetworkActivity: stoppedCount += 1
+      case .startedNetworkActivity:
+         startedCount += 1
+         print("Network activity observed starting")
+      case .stoppedNetworkActivity:
+         stoppedCount += 1
+         print("Network activity observed stopping")
+      case .operationStarted(let op):
+         opStartCount += 1
+         print("Operation \(op.name) observed starting")
+      case .operationCancelled(let op):
+         opCancelCount += 1
+         print("Operation \(op.name) observed cancelling")
+      case .operationFinished(let op):
+         opFinishCount += 1
+         print("Operation \(op.name) observed finishing")
       }
+      onObserve?(notification)
    }
    
    deinit {
