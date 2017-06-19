@@ -131,7 +131,13 @@ public extension IncNotifierObserver {
       let observer = NotificationCenter.default.addObserver(forName: name, object: object, queue: nil) { [weak self] rawNotification in
          guard (rawNotification.object as AnyObject) === (object as AnyObject) else { return }
          guard let wrappedNotification = T(name: rawNotification.name, userInfo: rawNotification.userInfo) else { return }
-         self?.observe(notification: wrappedNotification)
+         if let queue = self?.observationQueue {
+            queue.async {
+               self?.observe(notification: wrappedNotification)
+            }
+         } else {
+            self?.observe(notification: wrappedNotification)
+         }
       }
       observers.append((object: object, observer: observer))
    }
