@@ -8,33 +8,45 @@ public enum IncNetworkRequestOperationResult<SuccessType, ErrorType> {
 }
 
 open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapper: IncNetworkMapper>: IncNetworkOperation {
+   // MARK: - Private Properties
    private let _service: IncNetworkRequestService
    private let _request: IncNetworkRequest
    
+   // MARK: - Public Properties
    public var completion: ((IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) -> Void)?
+   public var completionQueue: DispatchQueue?
 
+   // MARK: - Init
    public init(request: IncNetworkRequest) {
       self._service = IncNetworkRequestService(IncNetworkRequestConfiguration.shared)
       self._request = request
       super.init()
    }
 
+   // MARK: - Public
+   open override func cancel() {
+      _service.cancel()
+      super.cancel()
+   }
+   
+   open override func execute() {
+      _service.request(_request, success: _handleSuccess, failure: _handleFailure)
+   }
+
+   // MARK: - Private
    private func _handleSuccess(_ response: Any?) {
       do {
          if let item = try SuccessMapper.process(response) {
-            self.completion?(.success(item))
+            _handleCompletion(.success(item))
          } else {
-            self.completion?(.nullSuccess)
+            _handleCompletion(.nullSuccess)
          }
-         self.finish()
       } catch {
-         self.completion?(.failure(error))
-         self.finish()
+         _handleCompletion(.failure(error))
       }
    }
    
    private func _handleFailure(_ error: Error, data: Data?) {
-      defer { finish() }
       let response: Any? = {
          guard let error = error as? IncNetworkRequestServiceError else { return nil }
          switch error {
@@ -49,22 +61,28 @@ open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapp
       }()
       do {
          if let item = try ErrorMapper.process(response) {
-            completion?(.error(item, error))
+            _handleCompletion(.error(item, error))
          } else {
-            completion?(.failure(error))
+            _handleCompletion(.failure(error))
          }
       } catch {
-         completion?(.failure(error))
+         _handleCompletion(.failure(error))
       }
    }
-
-   open override func cancel() {
-      _service.cancel()
-      super.cancel()
-   }
    
-   open override func start() {
-      super.start()
-      _service.request(_request, success: _handleSuccess, failure: _handleFailure)
+   private func _handleCompletion(_ result: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>, shouldFinish: Bool = true) {
+      if let queue = completionQueue, let completion = completion {
+         queue.async {
+            completion(result)
+            if shouldFinish {
+               self.finish()
+            }
+         }
+      } else {
+         completion?(result)
+         if shouldFinish {
+            finish()
+         }
+      }
    }
 }
