@@ -73,6 +73,10 @@ public class IncNetworkQueue: NSObject, IncNotifier {
       queue.addOperation(op)
    }
    
+   public func addOperations(_ ops: [Operation]) {
+      ops.forEach { self.addOperation($0) }
+   }
+   
    // MARK: - KVO
    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
       guard let count = change?[.newKey] as? Int else { fatalError() }
