@@ -88,8 +88,10 @@ public class IncNetworkQueue: NSObject, IncNotifier {
          post(notification: .stoppedNetworkActivity)
       }
       
-      guard managesNetworkActivityIndicator else { return }
-      UIApplication.shared.isNetworkActivityIndicatorVisible = count > 0
+      DispatchQueue.main.async {
+         guard self.managesNetworkActivityIndicator else { return }
+         UIApplication.shared.isNetworkActivityIndicatorVisible = count > 0
+      }
    }
    
    // MARK: - Deinit
