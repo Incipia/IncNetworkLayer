@@ -23,8 +23,7 @@ public class IncNetworkRequestService {
                 failure: ((Error, Data?) -> Void)? = nil) {
       
       let url = _configuration.baseURL.appendingPathComponent(request.endpoint)
-      
-      var headers = request.headers
+      let headers = request.headers
       // Set authentication token if available.
       //        headers?["X-Api-Auth-Token"] = BackendAuth.shared.token
       
