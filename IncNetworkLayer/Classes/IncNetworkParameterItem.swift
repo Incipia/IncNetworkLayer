@@ -24,7 +24,7 @@ public protocol IncNetworkFormValueRepresentable: IncNetworkParameterItem {
    var formValueRepresentation: Any? { get }
 }
 
-public protocol IncNetworkDictionaryRepresentable: IncNetworkParameterItem, IncNetworkFormRepresentable {
+public protocol IncNetworkDictionaryRepresentable: IncNetworkFormRepresentable {
    var dictionaryRepresentation: [String : Any]? { get }
 }
 

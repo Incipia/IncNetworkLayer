@@ -48,7 +48,7 @@ open class IncNetworkSerialQueue: IncNetworkQueue {
    }
    
    // MARK: - Private
-   @discardableResult private func _attemptNextOperation() {
+   private func _attemptNextOperation() {
       guard queue.operationCount == 0 else { return }
       if let nextOp = (operations.filter { $0.isReady }).first {
          isObservingReadiness = false
