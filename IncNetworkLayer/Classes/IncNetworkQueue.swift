@@ -1,6 +1,6 @@
 import Foundation
 
-public class IncNetworkQueue: NSObject, IncNotifier {
+open class IncNetworkQueue: NSObject, IncNotifier {
    // MARK: - Types
    public enum Notification: IncNotificationType {
       case startedNetworkActivity, stoppedNetworkActivity, operationStarted(IncNetworkOperation!), operationFinished(IncNetworkOperation!), operationCancelled(IncNetworkOperation!)
@@ -66,19 +66,19 @@ public class IncNetworkQueue: NSObject, IncNotifier {
    }
    
    // MARK: - Public
-   public func addOperation(_ op: Operation) {
+   open func addOperation(_ op: Operation) {
       if let networkOp = op as? IncNetworkOperation {
          networkOp.delegate = self
       }
       queue.addOperation(op)
    }
    
-   public func addOperations(_ ops: [Operation]) {
+   open func addOperations(_ ops: [Operation]) {
       ops.forEach { self.addOperation($0) }
    }
    
    // MARK: - KVO
-   public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+   open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
       guard let count = change?[.newKey] as? Int else { fatalError() }
       guard let oldCount = change?[.oldKey] as? Int else { fatalError() }
       
