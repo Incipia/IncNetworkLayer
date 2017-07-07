@@ -57,7 +57,7 @@ open class IncNetworkOperation: Operation {
    override open func start() {
       #if DEBUG
       if showDebugOutput {
-         print("--- START : \(name) ---")
+         print("--- START : \(String(describing: name)) ---")
       }
       #endif
       _isExecuting = true
@@ -68,7 +68,7 @@ open class IncNetworkOperation: Operation {
    override open func cancel() {
       #if DEBUG
       if showDebugOutput {
-         print("--- START : \(name) ---")
+         print("--- START : \(String(describing: name)) ---")
       }
       #endif
       _isExecuting = false
@@ -79,7 +79,7 @@ open class IncNetworkOperation: Operation {
    func finish() {
       #if DEBUG
       if showDebugOutput {
-         print("--- FINISH : \(name) ---")
+         print("--- FINISH : \(String(describing: name)) ---")
       }
       #endif
       _isExecuting = false
