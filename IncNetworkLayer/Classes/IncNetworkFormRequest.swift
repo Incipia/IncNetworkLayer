@@ -19,29 +19,29 @@ extension IncNetworkFormRequest {
       return form
    }
    
-   public func body(with parameters: [String : Any]) -> Data? {
-      guard !parameters.isEmpty else { return nil }
-      let query = parameters.flatMap {
-         guard let encodedValue = String(urlQueryValue: $0.value) else { return nil }
-         return "\($0.key)=\(encodedValue)"
-         }.joined(separator: "&")
+   public func body(parameters: [String : Any]?, encoding: String.Encoding = .utf8, isURLEncoded: Bool = true) throws -> Data? {
       
-      return query.data(using: .utf8)
+      var optionalBody: String?
+      if isURLEncoded {
+         do {
+            optionalBody = try self.query(with: parameters)
+         } catch {
+            switch error {
+            case IncNetworkRequestError.invalidQueryParameter(let name): throw IncNetworkRequestError.invalidBodyParameter(name: name)
+            default: throw error
+            }
+         }
+      } else {
+         optionalBody = parameters?.map { "\($0.key)=\($0.value)" }.joined(separator: "&")
+      }
+      
+      guard let body = optionalBody else { return nil }
+      guard let data = body.data(using: encoding) else { throw IncNetworkRequestError.invalidBody(encoding: encoding) }
+      
+      return data
    }
    
-   public func defaultFormHeaders() -> [String: String] {
-      return ["Content-Type": "application/x-www-form-urlencoded"]
-   }
-}
-
-extension String {
-   init?(urlQueryValue: Any) {
-      guard let processedString = "\(urlQueryValue)"
-         .replacingOccurrences(of: " ", with: "+")
-         .replacingOccurrences(of: "=", with: "=".addingPercentEncoding(withAllowedCharacters: CharacterSet())!)
-         .replacingOccurrences(of: "&", with: "&".addingPercentEncoding(withAllowedCharacters: CharacterSet())!)
-         .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return nil }
-      
-      self.init(processedString)
+   public func defaultFormHeaders(isURLEncoded: Bool = true) -> [String: String] {
+      return ["Content-Type": isURLEncoded ? "application/x-www-form-urlencoded" : "multipart/form-data"]
    }
 }
