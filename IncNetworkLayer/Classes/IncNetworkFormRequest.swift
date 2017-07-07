@@ -45,3 +45,14 @@ extension IncNetworkFormRequest {
       return ["Content-Type": isURLEncoded ? "application/x-www-form-urlencoded" : "multipart/form-data"]
    }
 }
+
+public protocol IncNetworkJSONFormRequest: IncNetworkJSONRequest, IncNetworkFormRequest {}
+public extension IncNetworkJSONFormRequest {
+   var method: IncNetworkService.Method { return .post }
+   
+   func decode(response: Data?) throws -> Any? {
+      guard let response = response, !response.isEmpty else { return nil }
+      let json = try JSONSerialization.jsonObject(with: response, options: [])
+      return json
+   }
+}
