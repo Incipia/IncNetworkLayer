@@ -13,9 +13,9 @@ extension IncNetworkFormRequest {
    public var method: IncNetworkService.Method { return .post }
    public var headers: [String : String]? { return defaultFormHeaders() }
    
-   public func decode(response: Data?) throws -> Any? {
-      guard let response = response, !response.isEmpty else { return nil }
-      let form = try JSONSerialization.jsonObject(with: response, options: [])
+   public func decode(data: Data?, response: URLResponse?) throws -> Any? {
+      guard let data = data, !data.isEmpty else { return nil }
+      let form = try JSONSerialization.jsonObject(with: data, options: [])
       return form
    }
    
@@ -50,9 +50,9 @@ public protocol IncNetworkJSONFormRequest: IncNetworkJSONRequest, IncNetworkForm
 public extension IncNetworkJSONFormRequest {
    var method: IncNetworkService.Method { return .post }
    
-   func decode(response: Data?) throws -> Any? {
-      guard let response = response, !response.isEmpty else { return nil }
-      let json = try JSONSerialization.jsonObject(with: response, options: [])
+   func decode(data: Data?, response: URLResponse?) throws -> Any? {
+      guard let data = data, !data.isEmpty else { return nil }
+      let json = try JSONSerialization.jsonObject(with: data, options: [])
       return json
    }
 }

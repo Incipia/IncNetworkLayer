@@ -27,19 +27,19 @@ public class IncNetworkRequestService {
       // Set authentication token if available.
       //        headers?["X-Api-Auth-Token"] = BackendAuth.shared.token
       
-      _service.makeRequest(for: url, method: request.method, body: request.body, query: request.query, headers: headers, success: { data, result in
+      _service.makeRequest(for: url, method: request.method, body: request.body, query: request.query, headers: headers, success: { data, response, result in
          do {
-            let response = try request.decode(response: data)
+            let response = try request.decode(data: data, response: response)
             success?(response)
          }
          catch {
             failure?(IncNetworkRequestServiceError.invalidData(error: error), data)
          }
          
-      }, failure: { data, result in
+      }, failure: { data, response, result in
          let dataError: IncNetworkRequestServiceError = {
             do {
-               let decoded = try request.decode(response: data)
+               let decoded = try request.decode(data: data, response: response)
                return .decodedData(decoded: decoded)
             }
             catch {

@@ -22,8 +22,8 @@ public class IncNetworkService {
                     body: Data? = nil,
                     query: String? = nil,
                     headers: [String: String]? = nil,
-                    success: ((_ data: Data?, _ result: IncNetworkService.Result) -> Void)? = nil,
-                    failure: ((_ data: Data?, _ result: IncNetworkService.Result) -> Void)? = nil) {
+                    success: ((_ data: Data?, _ response: URLResponse?, _ result: IncNetworkService.Result) -> Void)? = nil,
+                    failure: ((_ data: Data?, _ response: URLResponse?, _ result: IncNetworkService.Result) -> Void)? = nil) {
       
       
       var mutableRequest = _makeQuery(for: url, body: body, query: query)
@@ -37,11 +37,11 @@ public class IncNetworkService {
          guard error == nil else {
             // Request failed, might be internet connection issue
             let error = error!
-            failure?(data, .requestError(error: error))
+            failure?(data, response, .requestError(error: error))
             return
          }
          guard let httpResponse = response as? HTTPURLResponse else {
-            success?(data, .nonHTTP)
+            success?(data, response, .nonHTTP)
             return
          }
          
@@ -49,15 +49,15 @@ public class IncNetworkService {
          switch statusCode {
          case let statusCode where self._successCodes.contains(statusCode):
             print("Request finished with success code \(statusCode).")
-            success?(data, .httpSuccess(code: statusCode))
+            success?(data, response, .httpSuccess(code: statusCode))
          case let statusCode where self._failureCodes.contains(statusCode):
             print("Request finished with failure code \(statusCode).")
-            failure?(data, .httpFailure(code: statusCode))
+            failure?(data, response, .httpFailure(code: statusCode))
          default:
             print("Request finished with serious failure.")
             // Server returned response with status code different than
             // expected `successCodes`.
-            failure?(data, .unexpectedStatus(code: statusCode))
+            failure?(data, response, .unexpectedStatus(code: statusCode))
          }
       })
       
