@@ -58,3 +58,30 @@ open class IncNetworkSerialQueue: IncNetworkQueue {
       }
    }
 }
+
+open class IncNetworkSerialContextQueue: IncNetworkSerialQueue {
+   // MARK: - Public Properties
+   var context: Any?
+   
+   // MARK: - IncNetworkOperationDelegate
+   open override func operationStarted(_ operation: IncNetworkOperation) {
+      super.operationStarted(operation)
+      if let contextualOperation = operation as? IncNetworkContextual {
+         contextualOperation.enter(context: &context)
+      }
+   }
+   
+   open override func operationCancelled(_ operation: IncNetworkOperation) {
+      super.operationCancelled(operation)
+      if let contextualOperation = operation as? IncNetworkContextual {
+         contextualOperation.leave(context: &context)
+      }
+   }
+   
+   open override func operationFinished(_ operation: IncNetworkOperation) {
+      super.operationFinished(operation)
+      if let contextualOperation = operation as? IncNetworkContextual {
+         contextualOperation.leave(context: &context)
+      }
+   }
+}

@@ -33,6 +33,7 @@
 		E95043401E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E950433F1E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift */; };
 		E957FF131EB8008E00503C36 /* IncNetworkNilMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E957FF121EB8008E00503C36 /* IncNetworkNilMapper.swift */; };
 		E9814E6D1EF023B600DA40BD /* IncNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9814E6C1EF023B600DA40BD /* IncNotifier.swift */; };
+		E9AB952D1F10094800431A78 /* IncNetworkContextQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AB952C1F10094700431A78 /* IncNetworkContextQueue.swift */; };
 		E9AE549C1E57BD1B0069C47D /* IncNetworkObjectMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AE549B1E57BD1B0069C47D /* IncNetworkObjectMapper.swift */; };
 /* End PBXBuildFile section */
 
@@ -87,6 +88,7 @@
 		E950433F1E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkDataParameterRequest.swift; sourceTree = "<group>"; };
 		E957FF121EB8008E00503C36 /* IncNetworkNilMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkNilMapper.swift; sourceTree = "<group>"; };
 		E9814E6C1EF023B600DA40BD /* IncNotifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNotifier.swift; sourceTree = "<group>"; };
+		E9AB952C1F10094700431A78 /* IncNetworkContextQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkContextQueue.swift; sourceTree = "<group>"; };
 		E9AE549B1E57BD1B0069C47D /* IncNetworkObjectMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkObjectMapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -231,6 +233,7 @@
 			children = (
 				E94794A31E55274D00DBD135 /* IncNetworkOperation.swift */,
 				E94794A41E55274D00DBD135 /* IncNetworkQueue.swift */,
+				E9AB952C1F10094700431A78 /* IncNetworkContextQueue.swift */,
 				E949FCD81F0FFB820025C218 /* IncNetworkSerialQueue.swift */,
 				E94794A51E55274D00DBD135 /* IncNetworkService.swift */,
 			);
@@ -390,6 +393,7 @@
 				E94794A71E55274D00DBD135 /* IncNetworkQueue.swift in Sources */,
 				E9814E6D1EF023B600DA40BD /* IncNotifier.swift in Sources */,
 				E94794A01E55272200DBD135 /* IncNetworkArrayMapper.swift in Sources */,
+				E9AB952D1F10094800431A78 /* IncNetworkContextQueue.swift in Sources */,
 				E947949C1E5526D600DBD135 /* IncNetworkRequestOperation.swift in Sources */,
 				E950433A1E5F6C7700AB4D20 /* IncNetworkJSONRequest.swift in Sources */,
 				E950433C1E5F885C00AB4D20 /* IncNetworkParameterItem.swift in Sources */,

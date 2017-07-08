@@ -101,16 +101,16 @@ open class IncNetworkQueue: NSObject, IncNotifier {
 }
 
 extension IncNetworkQueue: IncNetworkOperationDelegate {
-   public func operationStarted(_ operation: IncNetworkOperation) {
+   open func operationStarted(_ operation: IncNetworkOperation) {
       post(notification: .operationStarted(operation))
    }
    
-   public func operationCancelled(_ operation: IncNetworkOperation) {
+   open func operationCancelled(_ operation: IncNetworkOperation) {
       post(notification: .operationCancelled(operation))
       operation.delegate = nil
    }
    
-   public func operationFinished(_ operation: IncNetworkOperation) {
+   open func operationFinished(_ operation: IncNetworkOperation) {
       post(notification: .operationFinished(operation))
       operation.delegate = nil
    }
