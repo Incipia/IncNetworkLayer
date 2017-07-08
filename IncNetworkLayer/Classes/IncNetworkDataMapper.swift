@@ -8,7 +8,7 @@
 
 import Foundation
 
-fileprivate class _IncNetworkDataMapper<Item: IncNetworkDataInitable>: IncNetworkMapper {
+internal class _IncNetworkDataMapper<Item: IncNetworkDataInitable>: IncNetworkMapper {
    
    public class func process(_ obj: Any?) throws -> Item? {
       guard let obj = obj else { return nil }
