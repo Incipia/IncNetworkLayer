@@ -52,6 +52,7 @@ open class IncNetworkSerialQueue: IncNetworkQueue {
       guard queue.operationCount == 0 else { return }
       if let nextOp = (operations.filter { $0.isReady }).first {
          isObservingReadiness = false
+         operations = operations.filter { $0 != nextOp }
          super.addOperation(nextOp)
       } else {
          isObservingReadiness = true
