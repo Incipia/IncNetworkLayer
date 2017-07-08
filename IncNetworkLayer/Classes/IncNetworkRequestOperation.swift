@@ -10,16 +10,16 @@ public enum IncNetworkRequestOperationResult<SuccessType, ErrorType> {
 open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapper: IncNetworkMapper>: IncNetworkOperation {
    // MARK: - Private Properties
    private let _service: IncNetworkRequestService
-   private let _request: IncNetworkRequest
    
    // MARK: - Public Properties
+   public let request: IncNetworkRequest
    public var completion: ((IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) -> Void)?
    public var completionQueue: DispatchQueue?
 
    // MARK: - Init
    public init(request: IncNetworkRequest) {
       self._service = IncNetworkRequestService(IncNetworkRequestConfiguration.shared)
-      self._request = request
+      self.request = request
       super.init()
    }
 
@@ -30,7 +30,7 @@ open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapp
    }
    
    open override func execute() {
-      _service.request(_request, success: _handleSuccess, failure: _handleFailure)
+      _service.request(request, success: _handleSuccess, failure: _handleFailure)
    }
 
    // MARK: - Private
