@@ -9,34 +9,34 @@
 import Foundation
 
 public protocol IncNetworkContextual {
-   func enter(context: inout Any?)
-   func leave(context: inout Any?)
+   func enter<Context>(context: inout Context?)
+   func leave<Context>(context: inout Context?)
 }
 
 public protocol IncNetworkTypedContextual: IncNetworkContextual {
-   associatedtype Context
+   associatedtype OwnContext
    
-   func enterOwn(context: inout Context?)
-   func leaveOwn(context: inout Context?)
+   func enterOwn(context: inout OwnContext?)
+   func leaveOwn(context: inout OwnContext?)
 }
 
 public extension IncNetworkTypedContextual {
-   func enter(context: inout Any?) {
-      var ownContext = context as? Context
+   func enter<Context>(context: inout Context?) {
+      var ownContext = context as? OwnContext
       enterOwn(context: &ownContext)
-      context = ownContext
+      context = ownContext as? Context
    }
 
-   func leave(context: inout Any?) {
-      var ownContext = context as? Context
+   func leave<Context>(context: inout Context?) {
+      var ownContext = context as? OwnContext
       leaveOwn(context: &ownContext)
-      context = ownContext
+      context = ownContext as? Context
    }
 }
 
-open class IncNetworkContextQueue: IncNetworkQueue {
+open class IncNetworkContextQueue<Context>: IncNetworkQueue {
    // MARK: - Public Properties
-   var context: Any?
+   var context: Context?
    
    // MARK: - IncNetworkOperationDelegate
    open override func operationStarted(_ operation: IncNetworkOperation) {

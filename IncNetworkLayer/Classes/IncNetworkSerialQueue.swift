@@ -59,9 +59,9 @@ open class IncNetworkSerialQueue: IncNetworkQueue {
    }
 }
 
-open class IncNetworkSerialContextQueue: IncNetworkSerialQueue {
+open class IncNetworkSerialContextQueue<Context>: IncNetworkSerialQueue {
    // MARK: - Public Properties
-   var context: Any?
+   var context: Context?
    
    // MARK: - IncNetworkOperationDelegate
    open override func operationStarted(_ operation: IncNetworkOperation) {
