@@ -14,7 +14,7 @@ extension IncNetworkJSONRequest {
    
    public var method: IncNetworkService.Method { return .post }
    public var headers: [String : String]? { return defaultJSONHeaders() }
-   public func decode(data: Data?) throws -> Any? {
+   public func decode(data: Data?, response: URLResponse?) throws -> Any? {
       guard let data = data, !data.isEmpty else { return nil }
       let json = try JSONSerialization.jsonObject(with: data, options: [])
       
