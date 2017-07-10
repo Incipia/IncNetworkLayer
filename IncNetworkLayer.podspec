@@ -26,7 +26,7 @@ TODO: Add long description of the pod here.
   s.author           = { 'Leif Meyer' => 'leif@incipia.co' }
   s.source           = { :git => 'git@github.com:Incipia/IncNetworkLayer.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '10.0'
 
   s.source_files = 'IncNetworkLayer/Classes/**/*'
   

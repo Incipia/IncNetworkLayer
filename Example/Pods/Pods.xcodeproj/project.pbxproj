@@ -35,6 +35,8 @@
 		E9814E6D1EF023B600DA40BD /* IncNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9814E6C1EF023B600DA40BD /* IncNotifier.swift */; };
 		E9AB952D1F10094800431A78 /* IncNetworkContextQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AB952C1F10094700431A78 /* IncNetworkContextQueue.swift */; };
 		E9AE549C1E57BD1B0069C47D /* IncNetworkObjectMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AE549B1E57BD1B0069C47D /* IncNetworkObjectMapper.swift */; };
+		E9F1082F1F142D480022FD2C /* IncNetworkActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F1082E1F142D480022FD2C /* IncNetworkActivityView.swift */; };
+		E9F108311F142D590022FD2C /* IncNetworkFormParameterRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F108301F142D590022FD2C /* IncNetworkFormParameterRequest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +92,8 @@
 		E9814E6C1EF023B600DA40BD /* IncNotifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNotifier.swift; sourceTree = "<group>"; };
 		E9AB952C1F10094700431A78 /* IncNetworkContextQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkContextQueue.swift; sourceTree = "<group>"; };
 		E9AE549B1E57BD1B0069C47D /* IncNetworkObjectMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkObjectMapper.swift; sourceTree = "<group>"; };
+		E9F1082E1F142D480022FD2C /* IncNetworkActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkActivityView.swift; sourceTree = "<group>"; };
+		E9F108301F142D590022FD2C /* IncNetworkFormParameterRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkFormParameterRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -196,6 +200,7 @@
 				E94794A21E55272B00DBD135 /* Network */,
 				E94794AC1E55278600DBD135 /* Items */,
 				E9814E691EF0235A00DA40BD /* Notifications */,
+				E9F1082D1F142D200022FD2C /* Views */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -207,6 +212,7 @@
 				E95043391E5F6C7700AB4D20 /* IncNetworkJSONRequest.swift */,
 				E950433D1E5F8B4D00AB4D20 /* IncNetworkJSONParameterRequest.swift */,
 				E949FCD11F0EE9610025C218 /* IncNetworkFormRequest.swift */,
+				E9F108301F142D590022FD2C /* IncNetworkFormParameterRequest.swift */,
 				E950433F1E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift */,
 				E94794961E5526D600DBD135 /* IncNetworkRequestConfiguration.swift */,
 				E94794971E5526D600DBD135 /* IncNetworkRequestService.swift */,
@@ -255,6 +261,14 @@
 				E9814E6C1EF023B600DA40BD /* IncNotifier.swift */,
 			);
 			name = Notifications;
+			sourceTree = "<group>";
+		};
+		E9F1082D1F142D200022FD2C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E9F1082E1F142D480022FD2C /* IncNetworkActivityView.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		F374422FE323410C7D1D5D064ADD7D78 /* Pods-IncNetworkLayer_Tests */ = {
@@ -383,6 +397,7 @@
 				E94794A81E55274D00DBD135 /* IncNetworkService.swift in Sources */,
 				E947949B1E5526D600DBD135 /* IncNetworkRequestService.swift in Sources */,
 				E95043381E5E6A9F00AB4D20 /* IncNetworkJSONMapper.swift in Sources */,
+				E9F1082F1F142D480022FD2C /* IncNetworkActivityView.swift in Sources */,
 				73C68F8C9002168C8115C77DD15797EF /* IncNetworkLayer-dummy.m in Sources */,
 				E957FF131EB8008E00503C36 /* IncNetworkNilMapper.swift in Sources */,
 				E94794A11E55272200DBD135 /* IncNetworkMapper.swift in Sources */,
@@ -399,6 +414,7 @@
 				E950433C1E5F885C00AB4D20 /* IncNetworkParameterItem.swift in Sources */,
 				E94794991E5526D600DBD135 /* IncNetworkRequest.swift in Sources */,
 				E95043341E5E687300AB4D20 /* IncNetworkDataMapper.swift in Sources */,
+				E9F108311F142D590022FD2C /* IncNetworkFormParameterRequest.swift in Sources */,
 				E950433E1E5F8B4D00AB4D20 /* IncNetworkJSONParameterRequest.swift in Sources */,
 				E9AE549C1E57BD1B0069C47D /* IncNetworkObjectMapper.swift in Sources */,
 				E95043401E5F8B6700AB4D20 /* IncNetworkDataParameterRequest.swift in Sources */,
@@ -602,7 +618,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/IncNetworkLayer/IncNetworkLayer-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/IncNetworkLayer/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/IncNetworkLayer/IncNetworkLayer.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -635,7 +651,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/IncNetworkLayer/IncNetworkLayer-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/IncNetworkLayer/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/IncNetworkLayer/IncNetworkLayer.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
