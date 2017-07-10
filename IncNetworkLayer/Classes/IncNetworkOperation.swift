@@ -61,8 +61,8 @@ open class IncNetworkOperation: Operation {
       }
       #endif
       _isExecuting = true
-      execute()
       delegate?.operationStarted(self)
+      execute()
    }
 
    override open func cancel() {
