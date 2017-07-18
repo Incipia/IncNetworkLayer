@@ -35,6 +35,7 @@
 		E9814E6D1EF023B600DA40BD /* IncNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9814E6C1EF023B600DA40BD /* IncNotifier.swift */; };
 		E9AB952D1F10094800431A78 /* IncNetworkContextQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AB952C1F10094700431A78 /* IncNetworkContextQueue.swift */; };
 		E9AE549C1E57BD1B0069C47D /* IncNetworkObjectMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AE549B1E57BD1B0069C47D /* IncNetworkObjectMapper.swift */; };
+		E9EB44DD1F1E782400FC66E7 /* IncNetworkPassFailOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EB44DC1F1E782400FC66E7 /* IncNetworkPassFailOperation.swift */; };
 		E9F1082F1F142D480022FD2C /* IncNetworkActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F1082E1F142D480022FD2C /* IncNetworkActivityView.swift */; };
 		E9F108311F142D590022FD2C /* IncNetworkFormParameterRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F108301F142D590022FD2C /* IncNetworkFormParameterRequest.swift */; };
 /* End PBXBuildFile section */
@@ -92,6 +93,7 @@
 		E9814E6C1EF023B600DA40BD /* IncNotifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNotifier.swift; sourceTree = "<group>"; };
 		E9AB952C1F10094700431A78 /* IncNetworkContextQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkContextQueue.swift; sourceTree = "<group>"; };
 		E9AE549B1E57BD1B0069C47D /* IncNetworkObjectMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkObjectMapper.swift; sourceTree = "<group>"; };
+		E9EB44DC1F1E782400FC66E7 /* IncNetworkPassFailOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkPassFailOperation.swift; sourceTree = "<group>"; };
 		E9F1082E1F142D480022FD2C /* IncNetworkActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkActivityView.swift; sourceTree = "<group>"; };
 		E9F108301F142D590022FD2C /* IncNetworkFormParameterRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncNetworkFormParameterRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -217,6 +219,7 @@
 				E94794961E5526D600DBD135 /* IncNetworkRequestConfiguration.swift */,
 				E94794971E5526D600DBD135 /* IncNetworkRequestService.swift */,
 				E94794981E5526D600DBD135 /* IncNetworkRequestOperation.swift */,
+				E9EB44DC1F1E782400FC66E7 /* IncNetworkPassFailOperation.swift */,
 			);
 			name = Request;
 			sourceTree = "<group>";
@@ -402,6 +405,7 @@
 				E957FF131EB8008E00503C36 /* IncNetworkNilMapper.swift in Sources */,
 				E94794A11E55272200DBD135 /* IncNetworkMapper.swift in Sources */,
 				E94794AE1E55279600DBD135 /* IncNetworkParsedItem.swift in Sources */,
+				E9EB44DD1F1E782400FC66E7 /* IncNetworkPassFailOperation.swift in Sources */,
 				E949FCD91F0FFB820025C218 /* IncNetworkSerialQueue.swift in Sources */,
 				E947949A1E5526D600DBD135 /* IncNetworkRequestConfiguration.swift in Sources */,
 				E94794A61E55274D00DBD135 /* IncNetworkOperation.swift in Sources */,
