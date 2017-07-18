@@ -50,7 +50,8 @@ open class IncNetworkSerialQueue: IncNetworkQueue {
    // MARK: - Private
    private func _attemptNextOperation() {
       guard queue.operationCount == 0 else { return }
-      if let nextOp = (operations.filter { $0.isReady }).first {
+      let maxPriority = operations.max { $0.queuePriority.rawValue > $1.queuePriority.rawValue }?.queuePriority ?? Operation.QueuePriority.veryLow
+      if let nextOp = ((operations.filter { $0.isReady && $0.queuePriority == maxPriority }).sorted { $0.queuePriority.rawValue > $1.queuePriority.rawValue }).first {
          isObservingReadiness = false
          operations = operations.filter { $0 != nextOp }
          super.addOperation(nextOp)
