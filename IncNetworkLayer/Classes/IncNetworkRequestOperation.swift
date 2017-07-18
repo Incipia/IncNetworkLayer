@@ -7,14 +7,19 @@ public enum IncNetworkRequestOperationResult<SuccessType, ErrorType> {
    case failure(Error)
 }
 
-open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapper: IncNetworkMapper>: IncNetworkOperation {
+open class IncNetworkBaseRequestOperation<ResultType, SuccessMapper: IncNetworkMapper, ErrorMapper: IncNetworkMapper>: IncNetworkOperation {
    // MARK: - Private Properties
    private let _service: IncNetworkRequestService
    
    // MARK: - Public Properties
    public let request: IncNetworkRequest
-   public var completion: ((IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) -> Void)?
+   public var completion: ((ResultType) -> Void)?
    public var completionQueue: DispatchQueue?
+   
+   // MARK: - Subclass Hooks
+   open func result(operationResult: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) -> ResultType {
+      fatalError("Subclasses must implement \(#function)")
+   }
 
    // MARK: - Init
    public init(request: IncNetworkRequest) {
@@ -71,18 +76,27 @@ open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapp
    }
    
    private func _handleCompletion(_ result: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>, shouldFinish: Bool = true) {
+      let completionResult = self.result(operationResult: result)
       if let queue = completionQueue, let completion = completion {
          queue.async {
-            completion(result)
+            completion(completionResult)
             if shouldFinish {
                self.finish()
             }
          }
       } else {
-         completion?(result)
+         completion?(completionResult)
          if shouldFinish {
             finish()
          }
       }
    }
 }
+
+open class IncNetworkRequestOperation<SuccessMapper: IncNetworkMapper, ErrorMapper: IncNetworkMapper>: IncNetworkBaseRequestOperation<IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>, SuccessMapper, ErrorMapper> {
+   // MARK: - Overriden
+   open override func result(operationResult: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) -> IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item> {
+      return operationResult
+   }
+}
+
