@@ -221,7 +221,7 @@
 				E94794981E5526D600DBD135 /* IncNetworkRequestOperation.swift */,
 				E9EB44DC1F1E782400FC66E7 /* IncNetworkPassFailOperation.swift */,
 			);
-			name = Request;
+			path = Request;
 			sourceTree = "<group>";
 		};
 		E947949D1E55271100DBD135 /* Mapping */ = {
@@ -234,7 +234,7 @@
 				E95043331E5E687300AB4D20 /* IncNetworkDataMapper.swift */,
 				E95043371E5E6A9F00AB4D20 /* IncNetworkJSONMapper.swift */,
 			);
-			name = Mapping;
+			path = Mapping;
 			sourceTree = "<group>";
 		};
 		E94794A21E55272B00DBD135 /* Network */ = {
@@ -246,7 +246,7 @@
 				E949FCD81F0FFB820025C218 /* IncNetworkSerialQueue.swift */,
 				E94794A51E55274D00DBD135 /* IncNetworkService.swift */,
 			);
-			name = Network;
+			path = Network;
 			sourceTree = "<group>";
 		};
 		E94794AC1E55278600DBD135 /* Items */ = {
@@ -255,7 +255,7 @@
 				E94794AD1E55279600DBD135 /* IncNetworkParsedItem.swift */,
 				E950433B1E5F885C00AB4D20 /* IncNetworkParameterItem.swift */,
 			);
-			name = Items;
+			path = Items;
 			sourceTree = "<group>";
 		};
 		E9814E691EF0235A00DA40BD /* Notifications */ = {
@@ -263,7 +263,7 @@
 			children = (
 				E9814E6C1EF023B600DA40BD /* IncNotifier.swift */,
 			);
-			name = Notifications;
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 		E9F1082D1F142D200022FD2C /* Views */ = {
@@ -271,7 +271,7 @@
 			children = (
 				E9F1082E1F142D480022FD2C /* IncNetworkActivityView.swift */,
 			);
-			name = Views;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		F374422FE323410C7D1D5D064ADD7D78 /* Pods-IncNetworkLayer_Tests */ = {
