@@ -79,6 +79,11 @@ public extension IncNotifier {
    static func remove(observer: Any, notification: Notification, object: Any? = nil) {
       NotificationCenter.default.removeObserver(observer, name: notification.name, object: object)
    }
+   
+   // MARK: - Equatable
+   static func == (lhs: Self, rhs: Self) -> Bool {
+      return (lhs as AnyObject) === (rhs as AnyObject)
+   }
 }
 
 public protocol IncNotifierBaseObserver: class {
