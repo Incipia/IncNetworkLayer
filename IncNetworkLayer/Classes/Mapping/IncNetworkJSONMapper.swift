@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal class _IncNetworkJSONMapper<Item: IncNetworkJSONInitable>: IncNetworkMapper {
+public class _IncNetworkJSONMapper<Item: IncNetworkJSONInitable>: IncNetworkMapper {
    // MARK: - IncNetworkMapper Protocol
    public class func process(_ obj: Any?) throws -> Item? {
       guard let obj = obj else { return nil }
