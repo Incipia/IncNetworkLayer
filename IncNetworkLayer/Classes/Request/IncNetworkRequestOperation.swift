@@ -17,6 +17,8 @@ open class IncNetworkBaseRequestOperation<ResultType, SuccessMapper: IncNetworkM
    public var completionQueue: DispatchQueue?
    
    // MARK: - Subclass Hooks
+   open class var defaultCompletionQueue: DispatchQueue? { return nil }
+   
    open func result(operationResult: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) -> ResultType {
       fatalError("Subclasses must implement \(#function)")
    }
@@ -26,6 +28,7 @@ open class IncNetworkBaseRequestOperation<ResultType, SuccessMapper: IncNetworkM
       self._service = IncNetworkRequestService(IncNetworkRequestConfiguration.shared)
       self.request = request
       super.init()
+      completionQueue = type(of: self).defaultCompletionQueue
    }
 
    // MARK: - Public
