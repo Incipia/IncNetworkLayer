@@ -55,13 +55,24 @@ open class IncNetworkQueue: NSObject, IncNotifier {
    public static var shared: IncNetworkQueue!
    
    // MARK: - Public Properties
-   let queue = OperationQueue()
+   let queue: OperationQueue
    public var managesNetworkActivityIndicator: Bool = false
    public var notificationQueue: DispatchQueue?
    
    // MARK: - Init
-   public override init() {
+   public init(queue: OperationQueue) {
+      self.queue = queue
       super.init()
+      _commonInit()
+   }
+   
+   public override init() {
+      queue = OperationQueue()
+      super.init()
+      _commonInit()
+   }
+   
+   private func _commonInit() {
       queue.addObserver(self, forKeyPath: #keyPath(OperationQueue.operationCount), options: [.new, .old], context: nil)
    }
    
