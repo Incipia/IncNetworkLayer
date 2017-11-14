@@ -19,6 +19,10 @@ open class IncNetworkBaseRequestOperation<ResultType, SuccessMapper: IncNetworkM
    // MARK: - Subclass Hooks
    open class var defaultCompletionQueue: DispatchQueue? { return nil }
    
+   open func request(operationRequest: IncNetworkRequest) -> IncNetworkRequest {
+      return operationRequest
+   }
+   
    open func result(operationResult: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) -> ResultType {
       fatalError("Subclasses must implement \(#function)")
    }
@@ -38,7 +42,7 @@ open class IncNetworkBaseRequestOperation<ResultType, SuccessMapper: IncNetworkM
    }
    
    open override func execute() {
-      _service.request(request, success: _handleSuccess, failure: _handleFailure)
+      _service.request(self.request(operationRequest: request), success: _handleSuccess, failure: _handleFailure)
    }
 
    // MARK: - Private
