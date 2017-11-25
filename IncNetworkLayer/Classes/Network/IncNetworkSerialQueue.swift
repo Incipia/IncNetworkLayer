@@ -10,27 +10,34 @@ import Foundation
 
 open class IncNetworkSerialQueue: IncNetworkQueue {
    // MARK: - Private Properties
-   private var isObservingReadiness: Bool = false {
+   private var _isObservingReadiness: Bool = false {
       didSet {
-         guard isObservingReadiness != oldValue else { return }
-         if isObservingReadiness {
+         guard _isObservingReadiness != oldValue else { return }
+         if _isObservingReadiness {
             operations.forEach { $0.addObserver(self, forKeyPath: #keyPath(Operation.isReady), options: [], context: nil) }
          } else {
             operations.forEach { $0.removeObserver(self, forKeyPath: #keyPath(Operation.isReady)) }
          }
       }
    }
+   fileprivate let _dispatchQueueKey = DispatchSpecificKey<Void>()
    
    // MARK: - Public Properties
    public var operations: [Operation] = []
+   public let dispatchQueue: DispatchQueue
+   
+   // MARK: - Init
+   public init(queue: OperationQueue = OperationQueue(), dispatchQueue: DispatchQueue = .main) {
+      self.dispatchQueue = dispatchQueue
+      dispatchQueue.setSpecific(key: _dispatchQueueKey, value: ())
+      super.init(queue: queue)
+   }
    
    // MARK: - Overridden
    open override func addOperation(_ op: Operation) {
-      if isObservingReadiness {
-         op.addObserver(self, forKeyPath: #keyPath(Operation.isReady), options: [], context: nil)
+      dispatchQueue.async {
+         self.directAddOperation(op)
       }
-      operations.append(op)
-      _attemptNextOperation()
    }
    
    // MARK: - KVO
@@ -42,21 +49,32 @@ open class IncNetworkSerialQueue: IncNetworkQueue {
          super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
          fallthrough
       case #keyPath(Operation.isReady):
-         _attemptNextOperation()
+         dispatchQueue.async {
+            self._attemptNextOperation()
+         }
       default: break
       }
    }
    
+   // MARK: - Direct Access
+   private func directAddOperation(_ op: Operation) {
+      if _isObservingReadiness {
+         op.addObserver(self, forKeyPath: #keyPath(Operation.isReady), options: [], context: nil)
+      }
+      operations.append(op)
+      _attemptNextOperation()
+   }
+
    // MARK: - Private
    private func _attemptNextOperation() {
       guard queue.operationCount == 0 else { return }
       let maxPriority = operations.max { $0.queuePriority.rawValue > $1.queuePriority.rawValue }?.queuePriority ?? Operation.QueuePriority.veryLow
       if let nextOp = ((operations.filter { $0.isReady && $0.queuePriority == maxPriority }).sorted { $0.queuePriority.rawValue > $1.queuePriority.rawValue }).first {
-         isObservingReadiness = false
+         _isObservingReadiness = false
          operations = operations.filter { $0 != nextOp }
          super.addOperation(nextOp)
       } else {
-         isObservingReadiness = true
+         _isObservingReadiness = true
       }
    }
 }
@@ -69,21 +87,39 @@ open class IncNetworkSerialContextQueue<Context>: IncNetworkSerialQueue {
    open override func operationStarted(_ operation: IncNetworkOperation) {
       super.operationStarted(operation)
       if let contextualOperation = operation as? IncNetworkContextual {
-         contextualOperation.enter(context: &context)
+         if (DispatchQueue.getSpecific(key: _dispatchQueueKey) != nil) {
+            contextualOperation.enter(context: &context)
+         } else {
+            dispatchQueue.sync {
+               contextualOperation.enter(context: &context)
+            }
+         }
       }
    }
    
    open override func operationCancelled(_ operation: IncNetworkOperation) {
       super.operationCancelled(operation)
       if let contextualOperation = operation as? IncNetworkContextual {
-         contextualOperation.leave(context: &context)
+         if (DispatchQueue.getSpecific(key: _dispatchQueueKey) != nil) {
+            contextualOperation.leave(context: &context)
+         } else {
+            dispatchQueue.sync {
+               contextualOperation.leave(context: &context)
+            }
+         }
       }
    }
    
    open override func operationFinished(_ operation: IncNetworkOperation) {
       super.operationFinished(operation)
       if let contextualOperation = operation as? IncNetworkContextual {
-         contextualOperation.leave(context: &context)
+         if (DispatchQueue.getSpecific(key: _dispatchQueueKey) != nil) {
+            contextualOperation.leave(context: &context)
+         } else {
+            dispatchQueue.sync {
+               contextualOperation.leave(context: &context)
+            }
+         }
       }
    }
 }

@@ -71,9 +71,9 @@ open class IncNetworkOperation: Operation {
          print("--- START : \(String(describing: name)) ---")
       }
       #endif
+      delegate?.operationCancelled(self)
       _isExecuting = false
       _isCancelled = true
-      delegate?.operationCancelled(self)
    }
 
    func finish() {
@@ -82,9 +82,9 @@ open class IncNetworkOperation: Operation {
          print("--- FINISH : \(String(describing: name)) ---")
       }
       #endif
+      delegate?.operationFinished(self)
       _isExecuting = false
       _isFinished = true
-      delegate?.operationFinished(self)
    }
    
    func execute() {
