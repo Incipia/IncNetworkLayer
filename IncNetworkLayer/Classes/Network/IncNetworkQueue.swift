@@ -61,7 +61,10 @@ open class IncNetworkQueue: NSObject, IncNotifier {
    
    // MARK: - Subclass Hooks
    open func operationAdded(_ op: Operation) {}
-   
+   open func networkOperationStarted(_ op: IncNetworkOperation) {}
+   open func networkOperationCancelled(_ op: IncNetworkOperation) {}
+   open func networkOperationFinished(_ op: IncNetworkOperation) {}
+
    // MARK: - Init
    public init(queue: OperationQueue) {
       self.queue = queue
@@ -117,15 +120,18 @@ open class IncNetworkQueue: NSObject, IncNotifier {
 
 extension IncNetworkQueue: IncNetworkOperationDelegate {
    open func operationStarted(_ operation: IncNetworkOperation) {
+      networkOperationStarted(operation)
       post(notification: .operationStarted(operation))
    }
    
    open func operationCancelled(_ operation: IncNetworkOperation) {
+      networkOperationCancelled(operation)
       post(notification: .operationCancelled(operation))
       operation.delegate = nil
    }
    
    open func operationFinished(_ operation: IncNetworkOperation) {
+      networkOperationFinished(operation)
       post(notification: .operationFinished(operation))
       operation.delegate = nil
    }
