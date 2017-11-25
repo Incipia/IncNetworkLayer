@@ -59,6 +59,9 @@ open class IncNetworkQueue: NSObject, IncNotifier {
    public var managesNetworkActivityIndicator: Bool = false
    public var notificationQueue: DispatchQueue?
    
+   // MARK: - Subclass Hooks
+   open func operationAdded(_ op: Operation) {}
+   
    // MARK: - Init
    public init(queue: OperationQueue) {
       self.queue = queue
@@ -82,6 +85,7 @@ open class IncNetworkQueue: NSObject, IncNotifier {
          networkOp.delegate = self
       }
       queue.addOperation(op)
+      operationAdded(op)
    }
    
    open func addOperations(_ ops: [Operation]) {

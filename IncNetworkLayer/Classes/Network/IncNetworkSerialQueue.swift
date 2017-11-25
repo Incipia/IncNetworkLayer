@@ -23,7 +23,7 @@ open class IncNetworkSerialQueue: IncNetworkQueue {
    fileprivate let _dispatchQueueKey = DispatchSpecificKey<Void>()
    
    // MARK: - Public Properties
-   public var operations: [Operation] = []
+   public private(set) var operations: [Operation] = []
    public let dispatchQueue: DispatchQueue
    
    // MARK: - Init
@@ -31,6 +31,15 @@ open class IncNetworkSerialQueue: IncNetworkQueue {
       self.dispatchQueue = dispatchQueue
       dispatchQueue.setSpecific(key: _dispatchQueueKey, value: ())
       super.init(queue: queue)
+   }
+
+   // MARK: - Subclass Hooks
+   open func operationQueued(_ op: Operation) {}
+   open func operationDequeued(_ op: Operation) {}
+   
+   // MARK: - Life Cycle
+   deinit {
+      dispatchQueue.setSpecific(key: _dispatchQueueKey, value: nil)
    }
    
    // MARK: - Overridden
@@ -40,6 +49,12 @@ open class IncNetworkSerialQueue: IncNetworkQueue {
       }
    }
    
+   open func removeOperation(_ op: Operation) {
+      dispatchQueue.async {
+         self.directRemoveOperation(op)
+      }
+   }
+
    // MARK: - KVO
    open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
       guard let keyPath = keyPath else { return }
@@ -57,12 +72,19 @@ open class IncNetworkSerialQueue: IncNetworkQueue {
    }
    
    // MARK: - Direct Access
-   private func directAddOperation(_ op: Operation) {
+   public func directAddOperation(_ op: Operation) {
       if _isObservingReadiness {
          op.addObserver(self, forKeyPath: #keyPath(Operation.isReady), options: [], context: nil)
       }
       operations.append(op)
+      operationQueued(op)
       _attemptNextOperation()
+   }
+   
+   public func directRemoveOperation(_ op: Operation) {
+      guard operations.contains(op) else { return }
+      operations = operations.filter { $0 != op }
+      operationDequeued(op)
    }
 
    // MARK: - Private
