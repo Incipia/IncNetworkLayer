@@ -5,6 +5,7 @@ public class IncNetworkService {
    private var _task: URLSessionDataTask?
    private var _successCodes: CountableClosedRange<Int> = 200...299
    private var _failureCodes: CountableClosedRange<Int> = 400...499
+   private var _isCancelled = false
    
    public enum Result {
       case httpSuccess(code: Int)
@@ -34,6 +35,7 @@ public class IncNetworkService {
       let session = URLSession.shared
       
       _task = session.dataTask(with: mutableRequest as URLRequest, completionHandler: { (data, response, error) in
+         guard !self._isCancelled else { return }
          guard error == nil else {
             // Request failed, might be internet connection issue
             let error = error!
@@ -65,6 +67,7 @@ public class IncNetworkService {
    }
    
    func cancel() {
+      _isCancelled = true
       _task?.cancel()
    }
    

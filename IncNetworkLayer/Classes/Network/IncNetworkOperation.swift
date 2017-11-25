@@ -52,7 +52,8 @@ open class IncNetworkOperation: Operation {
    override open var isAsynchronous: Bool { return true }
    override open var isExecuting: Bool { return _isExecuting }
    override open var isFinished: Bool { return _isFinished }
-   
+   override open var isCancelled: Bool { return _isCancelled }
+
    // MARK: - Public
    override open func start() {
       #if DEBUG
@@ -60,6 +61,7 @@ open class IncNetworkOperation: Operation {
          print("--- START : \(String(describing: name)) ---")
       }
       #endif
+      guard !_isCancelled else { return }
       _isExecuting = true
       delegate?.operationStarted(self)
       execute()
@@ -74,6 +76,7 @@ open class IncNetworkOperation: Operation {
       delegate?.operationCancelled(self)
       _isExecuting = false
       _isCancelled = true
+      _isFinished = true
    }
 
    func finish() {
