@@ -89,7 +89,6 @@ open class IncNetworkQueue: NSObject, IncNotifier {
       case true: cancelledOperationAdded(op)
       case false: operationAdded(op)
       }
-      operationAdded(op)
       if let networkOp = op as? IncNetworkOperation {
          networkOp.delegate = self
       }
