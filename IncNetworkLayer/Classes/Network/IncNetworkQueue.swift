@@ -61,6 +61,7 @@ open class IncNetworkQueue: NSObject, IncNotifier {
    
    // MARK: - Subclass Hooks
    open func operationAdded(_ op: Operation) {}
+   open func cancelledOperationAdded(_ op: Operation) {}
    open func networkOperationStarted(_ op: IncNetworkOperation) {}
    open func networkOperationCancelled(_ op: IncNetworkOperation) {}
    open func networkOperationFinished(_ op: IncNetworkOperation) {}
@@ -84,11 +85,15 @@ open class IncNetworkQueue: NSObject, IncNotifier {
    
    // MARK: - Public
    open func addOperation(_ op: Operation) {
+      switch op.isCancelled {
+      case true: cancelledOperationAdded(op)
+      case false: operationAdded(op)
+      }
+      operationAdded(op)
       if let networkOp = op as? IncNetworkOperation {
          networkOp.delegate = self
       }
       queue.addOperation(op)
-      operationAdded(op)
    }
    
    open func addOperations(_ ops: [Operation]) {

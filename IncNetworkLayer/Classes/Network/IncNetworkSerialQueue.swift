@@ -67,33 +67,61 @@ open class IncNetworkSerialQueue: IncNetworkQueue {
          dispatchQueue.async {
             self._attemptNextOperation()
          }
+      case #keyPath(Operation.isCancelled):
+         dispatchQueue.async {
+            self._addCancelledOperations()
+         }
       default: break
       }
    }
    
    // MARK: - Direct Access
    public func directAddOperation(_ op: Operation) {
-      if _isObservingReadiness {
-         op.addObserver(self, forKeyPath: #keyPath(Operation.isReady), options: [], context: nil)
-      }
+      _startObserving(op)
       operations.append(op)
       operationQueued(op)
+      _addCancelledOperations()
       _attemptNextOperation()
    }
    
    public func directRemoveOperation(_ op: Operation) {
       guard operations.contains(op) else { return }
       operations = operations.filter { $0 != op }
+      _stopObserving(op)
       operationDequeued(op)
    }
 
    // MARK: - Private
+   private func _startObserving(_ op: Operation) {
+      op.addObserver(self, forKeyPath: #keyPath(Operation.isCancelled), options: [], context: nil)
+      if _isObservingReadiness {
+         op.addObserver(self, forKeyPath: #keyPath(Operation.isReady), options: [], context: nil)
+      }
+   }
+   
+   private func _stopObserving(_ op: Operation) {
+      if _isObservingReadiness {
+         op.removeObserver(self, forKeyPath: #keyPath(Operation.isReady))
+      }
+      op.removeObserver(self, forKeyPath: #keyPath(Operation.isCancelled))
+   }
+   
+   private func _addCancelledOperations() {
+      let cancelledOps = operations.filter { $0.isCancelled }
+      cancelledOps.forEach { cancelledOp in
+         operations = operations.filter { $0 != cancelledOp }
+         _stopObserving(cancelledOp)
+         super.addOperation(cancelledOp)
+      }
+   }
+   
    private func _attemptNextOperation() {
       guard queue.operationCount == 0 else { return }
       let maxPriority = operations.max { $0.queuePriority.rawValue > $1.queuePriority.rawValue }?.queuePriority ?? Operation.QueuePriority.veryLow
       if let nextOp = ((operations.filter { $0.isReady && $0.queuePriority == maxPriority }).sorted { $0.queuePriority.rawValue > $1.queuePriority.rawValue }).first {
          _isObservingReadiness = false
          operations = operations.filter { $0 != nextOp }
+         nextOp.removeObserver(self, forKeyPath: #keyPath(Operation.isCancelled))
          super.addOperation(nextOp)
       } else {
          _isObservingReadiness = true
