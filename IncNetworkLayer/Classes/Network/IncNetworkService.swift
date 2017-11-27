@@ -43,6 +43,7 @@ public class IncNetworkService {
             return
          }
          guard let httpResponse = response as? HTTPURLResponse else {
+            print("Request to URL \(url) finished with non-HTTP response.")
             success?(data, response, .nonHTTP)
             return
          }
@@ -50,13 +51,13 @@ public class IncNetworkService {
          let statusCode = httpResponse.statusCode
          switch statusCode {
          case let statusCode where self._successCodes.contains(statusCode):
-            print("Request finished with success code \(statusCode).")
+            print("Request to URL \(url) finished with success code \(statusCode).")
             success?(data, response, .httpSuccess(code: statusCode))
          case let statusCode where self._failureCodes.contains(statusCode):
-            print("Request finished with failure code \(statusCode).")
+            print("Request to URL \(url) finished with failure code \(statusCode).")
             failure?(data, response, .httpFailure(code: statusCode))
          default:
-            print("Request finished with serious failure.")
+            print("Request to URL \(url) finished with unexpected code \(statusCode).")
             // Server returned response with status code different than
             // expected `successCodes`.
             failure?(data, response, .unexpectedStatus(code: statusCode))
