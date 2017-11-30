@@ -37,8 +37,7 @@ public extension IncNetworkDictionaryRepresentable {
          guard self.formRepresentationIncludes(key: $0.key) else { return }
          if let parameters = self.formParameters(key: $0.key, value: $0.value) {
             parameters.forEach { form[$0.key] = $0.value }
-         }
-         if let value = $0.value as? IncNetworkFormValueRepresentable {
+         } else if let value = $0.value as? IncNetworkFormValueRepresentable {
             form[$0.key] = value.formValueRepresentation
          } else if let formValue = $0.value as? IncNetworkFormRepresentable {
             if let subForm = formValue.formRepresentation {
