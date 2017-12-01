@@ -7,6 +7,18 @@
 
 import Foundation
 
+public struct IncNetworkFormFileParameter {
+   public var fileName: String
+   public var data: Data
+   public var contentType: String
+   
+   public init(fileName: String, data: Data, contentType: String) {
+      self.fileName = fileName
+      self.data = data
+      self.contentType = contentType
+   }
+}
+
 public protocol IncNetworkFormRequest: IncNetworkRequest {}
 
 extension IncNetworkFormRequest {
@@ -18,9 +30,13 @@ extension IncNetworkFormRequest {
       let form = try JSONSerialization.jsonObject(with: data, options: [])
       return form
    }
+
+   public func body(parameters: [String : Any]?, encoding: String.Encoding = .utf8, isURLEncoded: Bool = true, boundary: String? = nil) throws -> Data? {
+      var boundary = boundary
+      return try body(parameters: parameters, encoding: encoding, isURLEncoded: isURLEncoded, boundary: &boundary)
+   }
    
-   public func body(parameters: [String : Any]?, encoding: String.Encoding = .utf8, isURLEncoded: Bool = true) throws -> Data? {
-      
+   public func body(parameters: [String : Any]?, encoding: String.Encoding = .utf8, isURLEncoded: Bool = true, boundary: inout String?) throws -> Data? {
       var optionalBody: String?
       if isURLEncoded {
          do {
@@ -31,8 +47,27 @@ extension IncNetworkFormRequest {
             default: throw error
             }
          }
-      } else {
-         optionalBody = parameters?.map { "\($0.key)=\($0.value)" }.joined(separator: "&")
+      } else if let parameters = parameters, !parameters.isEmpty {
+         var bodyParts: [String] = []
+         
+         for param in parameters {
+            var body = ""
+            let paramName = param.key
+            body += "Content-Disposition:form-data; name=\"\(paramName)\""
+            if let fileParam = param.value as? IncNetworkFormFileParameter {
+               let contentType = fileParam.contentType
+               let fileContent = fileParam.data.base64EncodedString()
+               body += "; filename=\"\(fileParam.fileName)\"\r\n"
+               body += "Content-Type: \(contentType)\r\n\r\n"
+               body += fileContent
+            } else {
+               body += "\r\n\r\n\(param.value)"
+            }
+            bodyParts.append(body)
+         }
+         
+         let boundary = boundary ?? self.boundary(bodyParts: bodyParts)
+         optionalBody = "--\(boundary)\r\n\(bodyParts.joined(separator: "\r\n--\(boundary)\r\n"))\r\n--\(boundary)--"
       }
       
       guard let body = optionalBody else { return nil }
@@ -40,9 +75,25 @@ extension IncNetworkFormRequest {
       
       return data
    }
-   
-   public func defaultFormHeaders(isURLEncoded: Bool = true) -> [String: String] {
-      return ["Content-Type": isURLEncoded ? "application/x-www-form-urlencoded" : "multipart/form-data"]
+
+   public func boundary(bodyParts: [String] = []) -> String {
+      var boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+      var countDown = UInt32.max
+      while bodyParts.joined().range(of: boundary) != nil, countDown > 0 {
+         boundary = "----WebKitFormBoundary\(arc4random())"
+         countDown -= 1
+      }
+      if countDown == 0 {
+         print("Unique boundary could not be found for encoding form parameters for endpoint \(endpoint)")
+      }
+      return boundary
+   }
+
+   public func defaultFormHeaders(isURLEncoded: Bool = true, boundary: String? = nil) -> [String: String] {
+      switch isURLEncoded {
+      case true: return ["Content-Type": "application/x-www-form-urlencoded"]
+      case false: return ["Content-Type" : "multipart/form-data; boundary=\(boundary ?? self.boundary())"]
+      }
    }
 }
 
