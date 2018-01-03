@@ -27,6 +27,7 @@ public protocol IncNetworkFormValueRepresentable: IncNetworkParameterItem {
 public protocol IncNetworkDictionaryRepresentable: IncNetworkFormRepresentable {
    var dictionaryRepresentation: [String : Any]? { get }
    func formParameters(key: String, value: Any) -> [String : Any]?
+   func formRepresentationIncludes(key: String) -> Bool
 }
 
 public extension IncNetworkDictionaryRepresentable {
