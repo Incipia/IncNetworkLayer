@@ -33,7 +33,9 @@ public class IncNetworkService {
       mutableRequest.httpMethod = method.rawValue
       
       let session = URLSession.shared
-      
+
+      let requestDescription = "\(method) \(url)\(query != nil ? "?\(query!)" : "")"
+
       _task = session.dataTask(with: mutableRequest as URLRequest, completionHandler: { (data, response, error) in
          guard !self._isCancelled else { return }
          guard error == nil else {
@@ -43,7 +45,7 @@ public class IncNetworkService {
             return
          }
          guard let httpResponse = response as? HTTPURLResponse else {
-            print("Request to \(method) \(url) finished with non-HTTP response.")
+            print("Request to \(requestDescription) finished with non-HTTP response.")
             success?(data, response, .nonHTTP)
             return
          }
@@ -51,13 +53,13 @@ public class IncNetworkService {
          let statusCode = httpResponse.statusCode
          switch statusCode {
          case let statusCode where self._successCodes.contains(statusCode):
-            print("Request to \(method) \(url) finished with success code \(statusCode).")
+            print("Request to \(requestDescription) finished with success code \(statusCode).")
             success?(data, response, .httpSuccess(code: statusCode))
          case let statusCode where self._failureCodes.contains(statusCode):
-            print("Request to \(method) \(url) finished with failure code \(statusCode).")
+            print("Request to \(requestDescription) finished with failure code \(statusCode).")
             failure?(data, response, .httpFailure(code: statusCode))
          default:
-            print("Request to \(method) \(url) finished with unexpected code \(statusCode).")
+            print("Request to \(requestDescription) finished with unexpected code \(statusCode).")
             // Server returned response with status code different than
             // expected `successCodes`.
             failure?(data, response, .unexpectedStatus(code: statusCode))
