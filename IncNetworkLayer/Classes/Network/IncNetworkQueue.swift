@@ -55,7 +55,7 @@ open class IncNetworkQueue: NSObject, IncNotifier {
    public static var shared: IncNetworkQueue!
    
    // MARK: - Public Properties
-   let queue: OperationQueue
+   public let queue: OperationQueue
    public var managesNetworkActivityIndicator: Bool = false
    public var notificationQueue: DispatchQueue?
    
