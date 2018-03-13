@@ -71,6 +71,7 @@ open class IncNetworkBaseRequestOperation<ResultType, SuccessMapper: IncNetworkM
          default: return nil
          }
       }()
+      let serviceError = error
       do {
          if let item = try ErrorMapper.process(response) {
             _handleCompletion(.error(item, error))
@@ -78,7 +79,7 @@ open class IncNetworkBaseRequestOperation<ResultType, SuccessMapper: IncNetworkM
             _handleCompletion(.failure(error))
          }
       } catch {
-         _handleCompletion(.failure(error))
+         _handleCompletion(.failure(serviceError))
       }
    }
    
