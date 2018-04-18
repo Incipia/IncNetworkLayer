@@ -126,6 +126,7 @@ public extension IncNotifierObserver {
          }
       }
       observers.append((object: nil, observer: observer))
+      notifierObservers[name] = observers
    }
 
    func startObserving<T: IncNotificationBaseType, U: IncNotifier>(notification: T, object: U) where U: AnyObject, U.Notification == T {
@@ -145,6 +146,7 @@ public extension IncNotifierObserver {
          }
       }
       observers.append((object: object, observer: observer))
+      notifierObservers[name] = observers
    }
    
    func stopObserving<T: IncNotificationBaseType>(notification: T) {
