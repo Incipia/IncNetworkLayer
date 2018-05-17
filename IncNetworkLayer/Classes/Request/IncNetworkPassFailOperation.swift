@@ -10,12 +10,12 @@ import Foundation
 
 public protocol IncNetworkPassFailErrorType {
    // MARK: - Init
-   init?<OperationSuccessType, OperationErrorType>(operationResult: IncNetworkRequestOperationResult<OperationSuccessType, OperationErrorType>)
+   init?<OperationSuccessType, OperationErrorType>(operationResult: IncNetworkRequestOperationResult<OperationSuccessType, OperationErrorType>, request: IncNetworkRequest)
 }
 
-public enum IncNetworkPassFailError<SuccessType, ErrorType>: Error, IncNetworkPassFailErrorType {
+public enum IncNetworkPassFailError<SuccessType, ErrorType> : Error, IncNetworkPassFailErrorType {
    case unexpectedResultType(String), unexpectedResult(IncNetworkRequestOperationResult<SuccessType, ErrorType>)
-   public init?<OperationSuccessType, OperationErrorType>(operationResult: IncNetworkRequestOperationResult<OperationSuccessType, OperationErrorType>) {
+   public init?<OperationSuccessType, OperationErrorType>(operationResult: IncNetworkRequestOperationResult<OperationSuccessType, OperationErrorType>, request: IncNetworkRequest) {
       switch operationResult {
       case .success: return nil
       default:
@@ -36,7 +36,7 @@ public enum IncNetworkPassFailOperationResult<SuccessType, ErrorType: IncNetwork
 open class IncNetworkBasePassFailOperation<ErrorType: IncNetworkPassFailErrorType, SuccessMapper: IncNetworkMapper, ErrorMapper: IncNetworkMapper>: IncNetworkBaseRequestOperation<IncNetworkPassFailOperationResult<SuccessMapper.Item, ErrorType>, SuccessMapper, ErrorMapper> {
    // MARK: - Overridden
    open override func result(operationResult: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) -> IncNetworkPassFailOperationResult<SuccessMapper.Item, ErrorType> {
-      if let error = ErrorType(operationResult: operationResult) { return .error(error) }
+      if let error = ErrorType(operationResult: operationResult, request: request) { return .error(error) }
       switch operationResult {
       case .success(let item): return .success(item)
       default: fatalError("\(ErrorType.self) init must succeed for all operation results except .success")
@@ -53,7 +53,7 @@ public enum IncNetworkNullPassFailOperationResult<ErrorType: IncNetworkPassFailE
 
 public enum IncNetworkOptinalPassFailError<SuccessType, ErrorType>: Error, IncNetworkPassFailErrorType {
    case unexpectedResultType(String), unexpectedResult(IncNetworkRequestOperationResult<SuccessType, ErrorType>)
-   public init?<OperationSuccessType, OperationErrorType>(operationResult: IncNetworkRequestOperationResult<OperationSuccessType, OperationErrorType>) {
+   public init?<OperationSuccessType, OperationErrorType>(operationResult: IncNetworkRequestOperationResult<OperationSuccessType, OperationErrorType>, request: IncNetworkRequest) {
       switch operationResult {
       case .success, .nullSuccess: return nil
       default:
@@ -69,7 +69,7 @@ public enum IncNetworkOptinalPassFailError<SuccessType, ErrorType>: Error, IncNe
 open class IncNetworkBaseNullPassFailOperation<ErrorType: IncNetworkPassFailErrorType, SuccessMapper: IncNetworkMapper, ErrorMapper: IncNetworkMapper>: IncNetworkBaseRequestOperation<IncNetworkNullPassFailOperationResult<ErrorType>, SuccessMapper, ErrorMapper> {
    // MARK: - Overridden
    open override func result(operationResult: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) -> IncNetworkNullPassFailOperationResult<ErrorType> {
-      if let error = ErrorType(operationResult: operationResult) { return .error(error) }
+      if let error = ErrorType(operationResult: operationResult, request: request) { return .error(error) }
       return .success
    }
 }
@@ -84,7 +84,7 @@ public enum IncNetworkOptionalPassFailOperationResult<SuccessType, ErrorType: In
 open class IncNetworkBaseOptionalPassFailOperation<ErrorType: IncNetworkPassFailErrorType, SuccessMapper: IncNetworkMapper, ErrorMapper: IncNetworkMapper>: IncNetworkBaseRequestOperation<IncNetworkOptionalPassFailOperationResult<SuccessMapper.Item, ErrorType>, SuccessMapper, ErrorMapper> {
    // MARK: - Overridden
    open override func result(operationResult: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>) -> IncNetworkOptionalPassFailOperationResult<SuccessMapper.Item, ErrorType> {
-      if let error = ErrorType(operationResult: operationResult) { return .error(error) }
+      if let error = ErrorType(operationResult: operationResult, request: request) { return .error(error) }
       switch operationResult {
       case .success(let item): return .success(item)
       default: return .success(nil)
