@@ -44,6 +44,10 @@ open class IncNetworkBaseRequestOperation<ResultType, SuccessMapper: IncNetworkM
    open override func execute() {
       _service.request(self.request(operationRequest: request), success: _handleSuccess, failure: _handleFailure)
    }
+   
+   open func performCompletion(result: ResultType) {
+      completion?(result)
+   }
 
    // MARK: - Private
    private func _handleSuccess(_ response: Any?) {
@@ -85,15 +89,15 @@ open class IncNetworkBaseRequestOperation<ResultType, SuccessMapper: IncNetworkM
    
    private func _handleCompletion(_ result: IncNetworkRequestOperationResult<SuccessMapper.Item, ErrorMapper.Item>, shouldFinish: Bool = true) {
       let completionResult = self.result(operationResult: result)
-      if let queue = completionQueue, let completion = completion {
+      if let queue = completionQueue {
          queue.async {
-            completion(completionResult)
+            self.performCompletion(result: completionResult)
             if shouldFinish {
                self.finish()
             }
          }
       } else {
-         completion?(completionResult)
+         performCompletion(result: completionResult)
          if shouldFinish {
             finish()
          }
