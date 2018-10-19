@@ -25,7 +25,7 @@ public protocol IncNotificationType: IncNotificationBaseType, RawRepresentable {
 public extension IncNotificationType where RawValue == String {
    // MARK: - Public Properties
    static var namePrefix: String { return "\(type(of: self))" }
-   var name: Notification.Name { return Notification.Name(rawValue: "\(Self.namePrefix).\(rawValue)") }
+   var name: Notification.Name { return Notification.Name(rawValue: "\(type(of: self).namePrefix).\(rawValue)") }
    var userInfo: [AnyHashable : Any]? { return nil }
    
    // MARK: - Init
@@ -61,10 +61,10 @@ public extension IncNotifier {
    func post(notification: Notification) {
       if let queue = notificationQueue {
          queue.async {
-            Self.post(notification: notification, object: self)
+            type(of: self).post(notification: notification, object: self)
          }
       } else {
-         Self.post(notification: notification, object: self)
+         type(of: self).post(notification: notification, object: self)
       }
    }
    
