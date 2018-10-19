@@ -116,9 +116,9 @@ public final class IncNetworkActivityView: UIView, IncNotifierObserver {
       
       switch notification {
       case .operationStarted(let opertation):
-         label.text = "\(opertation.name ?? "")..."
-      case .operationCancelled(let opertation): label.text = "\(opertation.name ?? "")... Cancelled"
-      case .operationFinished(let opertation): label.text = "\(opertation.name ?? "")... Finished"
+         label.text = "\(opertation?.name ?? "")..."
+      case .operationCancelled(let opertation): label.text = "\(opertation?.name ?? "")... Cancelled"
+      case .operationFinished(let opertation): label.text = "\(opertation?.name ?? "")... Finished"
       default: fatalError()
       }
       
